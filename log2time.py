@@ -103,7 +103,7 @@ class TriadTagsAccumulator(PairedTagsAccumulator):
 '''
 State machine is best choice to implementation this
 
-The naive implementation below just works. It not generic and robust
+The naive implementation below just works. It's not generic and robust
 '''
 class PairedTagsAccumulatorWith2PreCond:
     def __init__(self, strPreCond1, strBeginTag, strPreCond2, strEndTag):
