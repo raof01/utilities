@@ -1,4 +1,6 @@
 from functools import reduce
+from argparse import ArgumentParser
+from os import getcwd, sep, path
 
 class Records:
     def __init__(self):
@@ -97,20 +99,37 @@ def write_string_list(f, lst):
     f.write('\n')
 
 
+class CmdLineParser:
+    def __init__(self):
+        self.input_file = ''
+        self.output_file = ''
+        self.parser = ArgumentParser(prog='tagparse.py',
+                                     description='Parse log files with format timestamp:name:Begin|End:Key=Val:...')
+        self.parser.add_argument('-i', '--input', dest='input_file', required=True, type=str,
+                                 help='pathname of log file')
+        self.parser.add_argument('-o', '--output-path', dest='output_path', type=str,
+                                 help='path to store parsed data files')
+
+    def parse_args(self):
+        parsed_args = self.parser.parse_args()
+        self.input_file = parsed_args.input_file
+        output_name = path.basename(self.input_file)
+        output_name = output_name[:output_name.find('.') + 1] + 'm'
+        if not parsed_args.output_path:
+            self.output_file = getcwd()
+        self.output_file += sep + output_name
+        
+        
 if __name__ == '__main__':
-    tag_lines = ['000 (ms): foo : Begin : amount = 1 : amount1 = 10000',
-                 '001 (ms): bar : Begin : amount = 2 : amount1 = 10000',
-                 '002 (ms): bar : End : amount = 2 : amount1 = 10000',
-                 '003 (ms): foo : End : amount = 1 : amount1 = 10000',
-                 '006 (ms): foo : Begin : amount = 3 : amount1 = 10000',
-                 '008 (ms): bar : Begin : amount = 4 : amount1 = 10000',
-                 '009 (ms): bar : End : amount = 4 : amount1 = 10000',
-                 '012 (ms): foo : End : amount = 3 : amount1 = 10000']
     accu = PairedTagsAccumulator('Begin', 'End')
-    for l in tag_lines:
-        accu.accumulate(l.split(':')[1].strip(), l)
+    cmd_parser = CmdLineParser()
+    cmd_parser.parse_args()
+
+    with open(cmd_parser.input_file, 'r') as f:
+        for l in f.readlines():
+            accu.accumulate(l.split(':')[1].strip(), l)
     results = accu.get_result()
-    with open('out.m', 'w') as out_file:
+    with open(cmd_parser.output_file, 'w') as out_file:
         for name in results:
             l1 = list(map(calculate_time_delta, results[name].record_list))
             write_scalar(out_file, name + '_total', reduce(lambda x, acc: x + acc.time, l1, 0.0))
