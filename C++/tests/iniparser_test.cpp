@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
 #include "iniparser.h"
 
-TEST(IniParser, Foo)
+TEST(IniParser, GetValue_ReturnInt)
 {
     IniParser iniParser;
-    ASSERT_TRUE(true);
+    ASSERT_EQ(0, iniParser.GetValue<int>(string("foo")));
 }
