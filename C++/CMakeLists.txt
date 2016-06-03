@@ -15,3 +15,8 @@ LINK_DIRECTORIES(/Users/raof01/workspace/gTest/gmock-1.7.0/gtest/lib)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
 target_link_libraries(${PROJECT_NAME} gtest gtest_main)
+
+# Copy Files
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/tests/test_data $<TARGET_FILE_DIR:${PROJECT_NAME}>)

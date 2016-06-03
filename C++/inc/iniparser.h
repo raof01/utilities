@@ -2,11 +2,15 @@
 #define _INI_PARSER_H
 
 #include <string>
+#include <map>
+#include <sstream>
 #include <vector>
 
 using std::string;
-using std::vector;
 using std::pair;
+using std::map;
+using std::vector;
+using std::istringstream;
 
 /*
  * The ini file format:
@@ -26,22 +30,49 @@ public:
     ~IniParser();
 
 public:
-    bool Parse();
-    bool Parse(const string& fName);
     template <typename T>
     T GetValue(const string& name) const
     {
-        return T();
+        T v;
+        istringstream(FindByKey(name)) >> v;
+        return v;
     }
+
+    template <typename T>
+    vector<T> GetAllValuesInSection(const string& sectionName) const
+    {
+        return vector<T>();
+    }
+
+    template <typename T>
+    vector<T> GetAllValues(const string& sectionName) const
+    {
+        return vector<T>();
+    }
+
+public:
     bool HasSection(const string& sectionName) const;
     bool HasKey(const string& keyName) const;
-    int Sections() const;
-    int KeyValues(const string& sectionName) const;
-    int KeyValues() const;
+    int SectionCount() const;
+    int KeyValueCount(const string& sectionName) const;
+    int KeyValueCount() const;
+
+    bool Parse();
 
 private:
-    vector<string> mSections;
-    vector<pair<string, string>> mKeyValues;
+    string FindByKey(const string& k) const;
+
+private:
+    typedef map<string, string> SectionType;
+    typedef map<string, SectionType> IniTreeType;
+
+private:
+    /*
+     * pair<sectionName, pair<keyName, value>>
+     * Empty sectionName means no section.
+     */
+    string mIniFileName;
+    IniTreeType mKeyValues;
 };
 
 #endif
