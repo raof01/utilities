@@ -88,11 +88,85 @@ TEST(IniParser, KeyValueCount_ReturnTrueWhenKeyValueExists)
     ASSERT_TRUE(iniParser.HasKey("Section1", "Key2"));
     ASSERT_TRUE(iniParser.HasKey("Section2", "Key1"));
     ASSERT_TRUE(iniParser.HasKey("Section2", "Pi"));
+
+    ASSERT_EQ(4, iniParser.KeyValueCount());
 }
 
 TEST(IniParser, GetValue_ReturnExpectedValue)
 {
     IniParser iniParser("./two_sections.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(0, iniParser.GetValue<string>("Key1").compare("Value1"));
+    ASSERT_EQ(0, iniParser.GetValue<string>("Key2").compare("Value2"));
+    ASSERT_DOUBLE_EQ(3.1415926535897, iniParser.GetValue<double>("Pi"));
+
+    ASSERT_EQ(0, iniParser.GetValue<string>("Section1", "Key1").compare("Value1"));
+    ASSERT_EQ(0, iniParser.GetValue<string>("Section1", "Key2").compare("Value2"));
+    ASSERT_EQ(0, iniParser.GetValue<string>("Section2", "Key1").compare("Value1InSection2"));
+    ASSERT_DOUBLE_EQ(3.1415926535897, iniParser.GetValue<double>("Pi"));
+
+    ASSERT_EQ(4, iniParser.KeyValueCount());
+}
+
+TEST(IniParser, SectionCount_ReturnExpectedValueWhenLastSectionIsEmpty)
+{
+    IniParser iniParser("./three_sections_last_empty.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(3, iniParser.SectionCount());
+    ASSERT_EQ(0, iniParser.KeyValueCount("Section3"));
+
+    ASSERT_EQ(4, iniParser.KeyValueCount());
+}
+
+TEST(IniParser, GetValue_ReturnExpectedValueWhenLastSectionIsEmpty)
+{
+    IniParser iniParser("./three_sections_last_empty.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(0, iniParser.GetValue<string>("Key1").compare("Value1"));
+    ASSERT_EQ(0, iniParser.GetValue<string>("Key2").compare("Value2"));
+    ASSERT_DOUBLE_EQ(3.1415926535897, iniParser.GetValue<double>("Pi"));
+
+    ASSERT_EQ(0, iniParser.GetValue<string>("Section1", "Key1").compare("Value1"));
+    ASSERT_EQ(0, iniParser.GetValue<string>("Section1", "Key2").compare("Value2"));
+    ASSERT_EQ(0, iniParser.GetValue<string>("Section2", "Key1").compare("Value1InSection2"));
+    ASSERT_DOUBLE_EQ(3.1415926535897, iniParser.GetValue<double>("Pi"));
+}
+
+TEST(IniParser, SectionCount_ReturnExpectedValueWhenFirstSectionIsEmpty)
+{
+    IniParser iniParser("./three_sections_first_empty.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(3, iniParser.SectionCount());
+    ASSERT_EQ(0, iniParser.KeyValueCount("Section3"));
+    ASSERT_EQ(4, iniParser.KeyValueCount());
+}
+
+TEST(IniParser, GetValue_ReturnExpectedValueWhenFirstSectionIsEmpty)
+{
+    IniParser iniParser("./three_sections_first_empty.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(0, iniParser.GetValue<string>("Key1").compare("Value1"));
+    ASSERT_EQ(0, iniParser.GetValue<string>("Key2").compare("Value2"));
+    ASSERT_DOUBLE_EQ(3.1415926535897, iniParser.GetValue<double>("Pi"));
+
+    ASSERT_EQ(0, iniParser.GetValue<string>("Section1", "Key1").compare("Value1"));
+    ASSERT_EQ(0, iniParser.GetValue<string>("Section1", "Key2").compare("Value2"));
+    ASSERT_EQ(0, iniParser.GetValue<string>("Section2", "Key1").compare("Value1InSection2"));
+    ASSERT_DOUBLE_EQ(3.1415926535897, iniParser.GetValue<double>("Pi"));
+}
+
+TEST(IniParser, SectionCount_ReturnExpectedValueWhenSecondSectionIsEmpty)
+{
+    IniParser iniParser("./three_sections_second_empty.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(3, iniParser.SectionCount());
+    ASSERT_EQ(0, iniParser.KeyValueCount("Section3"));
+    ASSERT_EQ(4, iniParser.KeyValueCount());
+}
+
+TEST(IniParser, GetValue_ReturnExpectedValueWhenSecondSectionIsEmpty)
+{
+    IniParser iniParser("./three_sections_second_empty.ini");
     ASSERT_TRUE(iniParser.Parse());
     ASSERT_EQ(0, iniParser.GetValue<string>("Key1").compare("Value1"));
     ASSERT_EQ(0, iniParser.GetValue<string>("Key2").compare("Value2"));

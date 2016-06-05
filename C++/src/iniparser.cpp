@@ -54,6 +54,7 @@ bool IniParser::Parse()
         if (!IsConfiguration(line))
         {
           secName = GetValidSection(line);
+          if (secName.empty()) continue;
           if (secName.compare(savedSecName) != 0)
           {
               // New section, but not first section
@@ -71,6 +72,7 @@ bool IniParser::Parse()
             keyValues.insert(make_pair(key, value));
         }
     }
+    // The last section should be saved
     mKeyValues.insert(make_pair(savedSecName, keyValues));
     return true;
 }
