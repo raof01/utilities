@@ -25,7 +25,6 @@ using std::istringstream;
 class IniParser
 {
 public:
-    IniParser();
     IniParser(const string& fName);
     ~IniParser();
 
@@ -39,20 +38,17 @@ public:
     }
 
     template <typename T>
-    vector<T> GetAllValuesInSection(const string& sectionName) const
+    T GetValue(const string& secName, const string& keyName) const
     {
-        return vector<T>();
-    }
-
-    template <typename T>
-    vector<T> GetAllValues(const string& sectionName) const
-    {
-        return vector<T>();
+        T v;
+        istringstream(FindByKeyInSection(secName, keyName)) >> v;
+        return v;
     }
 
 public:
     bool HasSection(const string& sectionName) const;
     bool HasKey(const string& keyName) const;
+    bool HasKey(const string& secName, const string& keyName) const;
     int SectionCount() const;
     int KeyValueCount(const string& sectionName) const;
     int KeyValueCount() const;
@@ -61,6 +57,7 @@ public:
 
 private:
     string FindByKey(const string& k) const;
+    string FindByKeyInSection(const string& s, const string& k) const;
 
 private:
     typedef map<string, string> SectionType;

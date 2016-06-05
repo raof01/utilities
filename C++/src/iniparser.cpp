@@ -9,12 +9,6 @@ const string OPEN_BRACKET = "[";
 const string CLOSE_BRACKET = "]";
 const string EQUAL_SIGN = "=";
 
-IniParser::IniParser()
-    : mIniFileName()
-    , mKeyValues()
-{
-}
-
 IniParser::IniParser(const string &fName)
     : mIniFileName(fName)
     , mKeyValues()
@@ -27,7 +21,7 @@ IniParser::~IniParser()
 
 string GetSectionName(const string& s)
 {
-    return s.substr(1, s.length() - 1);
+    return s.substr(1, s.length() - 2);
 }
 
 bool IsConfiguration(const string& s)
@@ -62,7 +56,8 @@ bool IniParser::Parse()
           secName = GetValidSection(line);
           if (secName.compare(savedSecName) != 0)
           {
-              if (!keyValues.empty())
+              // New section, but not first section
+              if (!savedSecName.empty())
                   mKeyValues.insert(make_pair(savedSecName, keyValues));
               keyValues.clear();
               savedSecName = secName;
@@ -76,8 +71,7 @@ bool IniParser::Parse()
             keyValues.insert(make_pair(key, value));
         }
     }
-    if (!keyValues.empty())
-        mKeyValues.insert(make_pair(savedSecName, keyValues));
+    mKeyValues.insert(make_pair(savedSecName, keyValues));
     return true;
 }
 
@@ -93,24 +87,45 @@ string IniParser::FindByKey(const string &k) const
     return string();
 }
 
+string IniParser::FindByKeyInSection(const string &s, const string &k) const
+{
+    if (s.empty()) return FindByKey(k);
+    SectionType::const_iterator i = mKeyValues.find(s)->second.find(k);
+    return i->second;
+}
+
 bool IniParser::HasSection(const string &sectionName) const
 {
-    return false;
+    return mKeyValues.find(sectionName) != mKeyValues.end();
 }
 
 bool IniParser::HasKey(const string &keyName) const
 {
+    for (IniTreeType::const_iterator iter = mKeyValues.begin();
+         iter != mKeyValues.end(); ++iter)
+    {
+        if (iter->second.find(keyName) != iter->second.end())
+            return true;
+    }
     return false;
+}
+
+bool IniParser::HasKey(const string &secName, const string &keyName) const
+{
+    IniTreeType::const_iterator secIter = mKeyValues.find(secName);
+    return secIter == mKeyValues.end() ? false : secIter->second.find(keyName) != secIter->second.end();
 }
 
 int IniParser::SectionCount() const
 {
-    return -1;
+    return mKeyValues.size();
 }
 
 int IniParser::KeyValueCount(const string &sectionName) const
 {
-    return -1;
+    if (!HasSection(sectionName)) return 0;
+    IniTreeType::const_iterator iter = mKeyValues.find(sectionName);
+    return iter->second.size();
 }
 
 int IniParser::KeyValueCount() const
