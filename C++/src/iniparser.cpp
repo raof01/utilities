@@ -43,7 +43,7 @@ string GetValidSection(const string& s)
 
 bool IniParser::Parse()
 {
-    ifstream iniFile = ifstream(mIniFileName);
+    ifstream iniFile(mIniFileName);
     if (!iniFile.good()) return false;
     string line;
     string savedSecName;
