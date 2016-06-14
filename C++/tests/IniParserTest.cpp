@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "iniparser.h"
+#include "IniParser.h"
 
 TEST(IniParser, Parse_ReturnFalseWhenIniFileDoesNotExist)
 {

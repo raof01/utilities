@@ -1,6 +1,6 @@
 #include <fstream>
 #include <sstream>
-#include "iniparser.h"
+#include "IniParser.h"
 
 using std::ifstream;
 using std::istringstream;
