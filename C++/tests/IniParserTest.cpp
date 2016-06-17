@@ -177,3 +177,11 @@ TEST(IniParser, GetValue_ReturnExpectedValueWhenSecondSectionIsEmpty)
     ASSERT_EQ(0, iniParser.GetValue<string>("Section2", "Key1").compare("Value1InSection2"));
     ASSERT_DOUBLE_EQ(3.1415926535897, iniParser.GetValue<double>("Pi"));
 }
+
+TEST(IniParser, GetValue_ReturnExpectedValueWhenAllKeyAreTheSame)
+{
+    IniParser iniParser("./dup.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(1, iniParser.GetValue<int>("A"));
+    ASSERT_EQ(1, iniParser.KeyValueCount());
+}
