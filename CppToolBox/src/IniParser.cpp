@@ -140,3 +140,27 @@ int IniParser::KeyValueCount() const
     }
     return cnt;
 }
+
+void IniParser::AllValues(const string &s, vector<string>& v) const
+{
+    v.clear();
+    if (!HasSection(s)) return;
+    IniTreeType::const_iterator section = mKeyValues.find(s);
+    for (SectionType::const_iterator iter = section->second.begin();
+         iter != section->second.end(); ++iter)
+    {
+        v.push_back(iter->second);
+    }
+}
+
+void IniParser::AllValues(vector<string>& v) const
+{
+    v.clear();
+    for(IniTreeType::const_iterator iter = mKeyValues.begin();
+        iter != mKeyValues.end(); ++iter)
+    {
+        for (SectionType::const_iterator sIter = iter->second.begin();
+             sIter != iter->second.end(); ++sIter)
+            v.push_back(sIter->second);
+    }
+}

@@ -185,3 +185,29 @@ TEST(IniParser, GetValue_ReturnExpectedValueWhenAllKeyAreTheSame)
     ASSERT_EQ(1, iniParser.GetValue<int>("A"));
     ASSERT_EQ(1, iniParser.KeyValueCount());
 }
+
+TEST(IniParser, AllValues_ReturnEmptyVectorForEmptyIni)
+{
+    IniParser iniParser("./empty.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    vector<int> v;
+    iniParser.AllValues(v);
+    ASSERT_TRUE(v.empty());
+    iniParser.AllValues("NoSection", v);
+    ASSERT_TRUE(v.empty());
+}
+
+TEST(IniParser, AllValues_ReturnExpectedVector)
+{
+    IniParser iniParser("./same_type_value.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    vector<int> v;
+    iniParser.AllValues(v);
+    ASSERT_EQ(10, v.size());
+    for(int i = 10, j = 0; i > 0 && j < 10; --i, ++j)
+        ASSERT_EQ(i, v[j]);
+    iniParser.AllValues("Section2", v);
+    ASSERT_EQ(4, v.size());
+    for(int i = 6, j = 0; i > 2 && j < 4; --i, ++j)
+        ASSERT_EQ(i, v[j]);
+}

@@ -45,6 +45,22 @@ public:
         return v;
     }
 
+    template <typename T>
+    void AllValues(vector<T>& v) const
+    {
+        vector<string> sv;
+        AllValues(sv);
+        StringsToValues(sv, v);
+    }
+
+    template <typename T>
+    void AllValues(const string& sectName, vector<T>& v) const
+    {
+        vector<string> sv;
+        AllValues(sectName, sv);
+        StringsToValues(sv, v);
+    }
+
 public:
     bool HasSection(const string& sectionName) const;
     bool HasKey(const string& keyName) const;
@@ -52,12 +68,27 @@ public:
     int SectionCount() const;
     int KeyValueCount(const string& sectionName) const;
     int KeyValueCount() const;
+    void AllValues(vector<string>& v) const;
+    void AllValues(const string& s, vector<string>& v) const;
 
     bool Parse();
 
 private:
     string FindByKey(const string& k) const;
     string FindByKeyInSection(const string& s, const string& k) const;
+
+    template <typename T>
+    void StringsToValues(const vector<string>& sv, vector<T>& vv) const
+    {
+        vv.clear();
+        for(vector<string>::const_iterator iter = sv.begin();
+            iter != sv.end(); ++iter)
+        {
+            T val;
+            istringstream(*iter) >> val;
+            vv.push_back(val);
+        }
+    }
 
 private:
     typedef map<string, string> SectionType;
