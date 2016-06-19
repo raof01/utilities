@@ -8,6 +8,7 @@ using std::istringstream;
 const string OPEN_BRACKET = "[";
 const string CLOSE_BRACKET = "]";
 const string EQUAL_SIGN = "=";
+const string COMMENT_SIGN = "#";
 
 IniParser::IniParser(const string &fName)
     : mIniFileName(fName)
@@ -41,6 +42,14 @@ string GetValidSection(const string& s)
     return name;
 }
 
+string RemoveComment(const string& s)
+{
+    string::size_type p = s.find(COMMENT_SIGN);
+    if (p != string::npos)
+        return s.substr(0, p);
+    return s;
+}
+
 bool IniParser::Parse()
 {
     ifstream iniFile(mIniFileName);
@@ -50,6 +59,7 @@ bool IniParser::Parse()
     map<string, string> keyValues;
     while(std::getline(iniFile, line))
     {
+        line = RemoveComment(line);
         string secName;
         if (!IsConfiguration(line))
         {
@@ -66,6 +76,7 @@ bool IniParser::Parse()
         }
         else
         {
+            if (savedSecName.empty()) savedSecName = DEFAULT_SECTION;
             istringstream iss(line);
             string key, equal, value;
             iss >> key >> equal >> value;

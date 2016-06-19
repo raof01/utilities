@@ -55,7 +55,7 @@ TEST(IniParser, HasSection_ReturnTrueWhenNoSection)
 {
     IniParser iniParser("./no_section.ini");
     ASSERT_TRUE(iniParser.Parse());
-    ASSERT_TRUE(iniParser.HasSection(string()));
+    ASSERT_TRUE(iniParser.HasSection(DEFAULT_SECTION));
 }
 
 TEST(IniParser, KeyValueCount_ReturnZeorWhenNoKeyValue)
@@ -210,4 +210,19 @@ TEST(IniParser, AllValues_ReturnExpectedVector)
     ASSERT_EQ(4, v.size());
     for(int i = 6, j = 0; i > 2 && j < 4; --i, ++j)
         ASSERT_EQ(i, v[j]);
+}
+
+TEST(IniParser, Parser_ReturnNoSectionWhenOnlyCommentContained)
+{
+    IniParser iniParser("./empty.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(0, iniParser.KeyValueCount());
+}
+
+
+TEST(IniParser, GetValue_ReturnExpectedValueInNoNameSection)
+{
+    IniParser iniParser("./one_section_with_no_name_section.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(4, iniParser.KeyValueCount());
 }
