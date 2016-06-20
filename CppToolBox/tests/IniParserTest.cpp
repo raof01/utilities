@@ -226,3 +226,24 @@ TEST(IniParser, GetValue_ReturnExpectedValueInNoNameSection)
     ASSERT_TRUE(iniParser.Parse());
     ASSERT_EQ(4, iniParser.KeyValueCount());
 }
+
+TEST(IniParser, SectionCount_ReturnExpectedValueForSpecificPattern)
+{
+    IniParser iniParser("./three_sections_first_empty.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(3, iniParser.SectionCount("Section"));
+}
+
+TEST(IniParser, SectionCount_ReturnZeroForNonExistentSectionName)
+{
+    IniParser iniParser("./three_sections_first_empty.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(0, iniParser.SectionCount("NoSuchSection"));
+}
+
+TEST(IniParser, SectionCount_ReturnExpectedValue)
+{
+    IniParser iniParser("./four_sections.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(1, iniParser.SectionCount("Section"));
+}

@@ -34,7 +34,7 @@ public:
     template <typename T>
     T GetValue(const string& name) const
     {
-        T v;
+        T v = T();
         istringstream(FindByKey(name)) >> v;
         return v;
     }
@@ -42,7 +42,7 @@ public:
     template <typename T>
     T GetValue(const string& secName, const string& keyName) const
     {
-        T v;
+        T v = T();
         istringstream(FindByKeyInSection(secName, keyName)) >> v;
         return v;
     }
@@ -68,6 +68,8 @@ public:
     bool HasKey(const string& keyName) const;
     bool HasKey(const string& secName, const string& keyName) const;
     int SectionCount() const;
+    // Section names can not duplicate but can have same pattern
+    int SectionCount(const string& secNamePattern) const;
     int KeyValueCount(const string& sectionName) const;
     int KeyValueCount() const;
     void AllValues(vector<string>& v) const;

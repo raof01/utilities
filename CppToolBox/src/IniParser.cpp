@@ -1,9 +1,17 @@
 #include <fstream>
 #include <sstream>
+#include <algorithm>
+#include <functional>
+#include <cctype>
+#include <locale>
 #include "IniParser.h"
 
 using std::ifstream;
 using std::istringstream;
+using std::ptr_fun;
+using std::not1;
+using std::isspace;
+
 
 const string OPEN_BRACKET = "[";
 const string CLOSE_BRACKET = "]";
@@ -25,12 +33,32 @@ string GetSectionName(const string& s)
     return s.substr(1, s.length() - 2);
 }
 
-bool IsConfiguration(const string& s)
+// trim from start
+static inline string &LeftTrim(string &s)
+{
+    s.erase(s.begin(), find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace))));
+    return s;
+}
+
+// trim from end
+static inline string &RightTrim(string &s)
+{
+    s.erase(find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(), s.end());
+    return s;
+}
+
+// trim from both ends
+static inline string &Trim(string &s)
+{
+    return LeftTrim(RightTrim(s));
+}
+
+static bool IsConfiguration(const string& s)
 {
     return s.find(EQUAL_SIGN) != string::npos;
 }
 
-string GetValidSection(const string& s)
+static string GetValidSection(const string& s)
 {
     if (s.length() == 2)
         return string();
@@ -42,7 +70,7 @@ string GetValidSection(const string& s)
     return name;
 }
 
-string RemoveComment(const string& s)
+static string RemoveComment(const string& s)
 {
     string::size_type p = s.find(COMMENT_SIGN);
     if (p != string::npos)
@@ -60,6 +88,7 @@ bool IniParser::Parse()
     while(std::getline(iniFile, line))
     {
         line = RemoveComment(line);
+        Trim(line);
         string secName;
         if (!IsConfiguration(line))
         {
@@ -132,6 +161,18 @@ bool IniParser::HasKey(const string &secName, const string &keyName) const
 int IniParser::SectionCount() const
 {
     return mKeyValues.size();
+}
+
+int IniParser::SectionCount(const string &secNamePattern) const
+{
+    int cnt = 0;
+    for (IniTreeType::const_iterator iter = mKeyValues.begin();
+         iter != mKeyValues.end(); ++iter)
+    {
+        if (iter->first.find(secNamePattern) != string::npos)
+            ++cnt;
+    }
+    return cnt;
 }
 
 int IniParser::KeyValueCount(const string &sectionName) const
