@@ -12,7 +12,6 @@ using std::ptr_fun;
 using std::not1;
 using std::isspace;
 
-
 const string OPEN_BRACKET = "[";
 const string CLOSE_BRACKET = "]";
 const string EQUAL_SIGN = "=";
