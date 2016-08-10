@@ -173,7 +173,7 @@ if not cmdParser.cleanOnly:
         rptmr.printMessage(' Generating cscope files ...')
         ret = genCscopeFiles(srcDir)
         rptmr.stop(ret)
-        removeTmpFile(tmpFile)
+        # removeTmpFile(tmpFile)
 
     if not noTags:
         # Generate TAGS
