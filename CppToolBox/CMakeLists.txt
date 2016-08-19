@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
 project(CppToolBox)
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
 
 aux_source_directory(. SRC_LIST)
 aux_source_directory(./src SRC_LIST)
@@ -23,8 +23,15 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     SET(GTEST_MAIN_LIBRARY gtest_main)
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    FIND_PACKAGE(GTest REQUIRED)
+    INCLUDE_DIRECTORIES(${GTEST_INCLUDE_DIRS})
+endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+FIND_PACKAGE(Threads REQUIRED)
+
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARY} ${GTEST_MAIN_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARY} ${GTEST_MAIN_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 # Copy Files

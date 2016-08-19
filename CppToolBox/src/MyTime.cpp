@@ -2,7 +2,6 @@
 
 using std::chrono::duration;
 
-using NMRDownholeMachineLearning::Time;
 
 MyTime::MyTime() : mStart()
 {
