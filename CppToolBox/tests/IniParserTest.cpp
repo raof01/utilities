@@ -36,6 +36,13 @@ TEST(IniParser, SectionCount_ReturnOneWhenOneSectionPresent)
     ASSERT_EQ(1, iniParser.SectionCount());
 }
 
+TEST(IniParser, SectionCount_ReturnZeroWhenContainingOneEmptySectionName)
+{
+    IniParser iniParser("./one_empty_section_no_keyvalue.ini");
+    ASSERT_TRUE(iniParser.Parse());
+    ASSERT_EQ(0, iniParser.SectionCount());
+}
+
 TEST(IniParser, SectionCount_ReturnTwoWhenTwoSectionsPresent)
 {
     IniParser iniParser("./two_sections_no_keyvalue.ini");

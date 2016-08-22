@@ -112,7 +112,8 @@ bool IniParser::Parse()
         }
     }
     // The last section should be saved
-    mKeyValues.insert(make_pair(savedSecName, keyValues));
+    if (!savedSecName.empty())
+        mKeyValues.insert(make_pair(savedSecName, keyValues));
     return true;
 }
 
