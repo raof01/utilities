@@ -102,7 +102,7 @@ class DialogConnectToDataBase(QWidget):
         return True
 
     def __showErrorMsgBox(self, errorMsg):
-        QMessageBox.question(self, 'Error!', errorMsg, QMessageBox.Ok)
+        QMessageBox.critical(self, 'Error!', errorMsg, QMessageBox.Ok)
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)
