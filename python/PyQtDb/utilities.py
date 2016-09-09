@@ -6,6 +6,8 @@ import re
 def validIpAddress(ipAddress):
     if 'localhost' == ipAddress:
         return True
+    if len(ipAddress.split(sep='.')) != 4:
+        return False
     try:
         inet_aton(ipAddress)
         return True

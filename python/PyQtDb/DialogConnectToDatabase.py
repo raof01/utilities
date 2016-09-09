@@ -2,9 +2,10 @@
 
 import sys
 import socket
-from PyQt5.QtWidgets import (QWidget, QPushButton, QLineEdit, 
-    QInputDialog, QApplication, QHBoxLayout, QVBoxLayout, QLabel)
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLineEdit,
+    QApplication, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox)
 from PyQt5.QtCore import QRect, pyqtSlot
+import utilities
 
 class DialogConnectToDataBase(QWidget):
     
@@ -75,11 +76,33 @@ class DialogConnectToDataBase(QWidget):
 
     @pyqtSlot()
     def saveValues(self):
-        # TODO: validation of address and port
-        if self._leIpAddr.text():
-            print("IP: " + self._leIpAddr.text())
-        if self._lePort.text():
-            print("Port: " + self._lePort.text())
+        if not self.__validInput():
+            return
+        # TODO: Save user input
+        self.close()
+
+    def __validInput(self):
+        if not utilities.validIpAddress(self._leIpAddr.text()):
+            self.__showErrorMsgBox('Invalid IP Address: ' +
+                                    self._leIpAddr.text())
+            return False
+        
+        if not utilities.validPort(self._lePort.text()):
+            self.__showErrorMsgBox('Invalid Port: ' +
+                                    self._lePort.text())
+            return False
+
+        if len(self._leUserName.text()) == 0:
+            self.__showErrorMsgBox('User name must not be empty')
+            return False
+
+        if len(self._lePasswd.text()) == 0:
+            self.__showErrorMsgBox('Password must not be empty')
+            return False
+        return True
+
+    def __showErrorMsgBox(self, errorMsg):
+        QMessageBox.question(self, 'Error!', errorMsg, QMessageBox.Ok)
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)

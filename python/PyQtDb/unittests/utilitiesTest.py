@@ -19,6 +19,9 @@ class UtilitiesTest(unittest.TestCase):
     def test_validIpAddress_returnTrue_whenIpAddressIsValid(self):
         self.assertTrue(utilities.validIpAddress('192.168.0.118'))
 
+    def test_validIpAddress_returnTrue_whenIpAddressIsInValid(self):
+        self.assertFalse(utilities.validIpAddress('192.168.0.'))
+
     def test_validPort_returnTrue_whenPortIsValid(self):
         self.assertTrue(utilities.validPort('8889'))
 
