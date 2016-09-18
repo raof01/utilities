@@ -21,7 +21,7 @@ class DialogConnectToDataBase(QWidget):
         self.__LBL_IP = QLabel('IP: ')
         self.__LBL_PORT = QLabel('Port: ')
         self.__TITLE = 'Connect to Database'
-        self.__OK = 'Ok'
+        self.__CONNECT = 'Connect'
         self.__CANCEL = 'Cancel'
         
     def _initUI(self):
@@ -66,7 +66,7 @@ class DialogConnectToDataBase(QWidget):
 
     def __initButtonLayout(self):
         hboxBtns = QHBoxLayout()
-        self._okButton = QPushButton(self.__OK)
+        self._okButton = QPushButton(self.__CONNECT)
         self._okButton.clicked.connect(self.saveValues)
         self._cancelButton = QPushButton(self.__CANCEL)
         self._cancelButton.clicked.connect(self.close)
@@ -83,26 +83,23 @@ class DialogConnectToDataBase(QWidget):
 
     def __validInput(self):
         if not utilities.validIpAddress(self._leIpAddr.text()):
-            self.__showErrorMsgBox('Invalid IP Address: ' +
+            utilities.showErrorMsgBox(self, 'Invalid IP Address: ' +
                                     self._leIpAddr.text())
             return False
         
         if not utilities.validPort(self._lePort.text()):
-            self.__showErrorMsgBox('Invalid Port: ' +
+            utilities.showErrorMsgBox(self, 'Invalid Port: ' +
                                     self._lePort.text())
             return False
 
         if len(self._leUserName.text()) == 0:
-            self.__showErrorMsgBox('User name must not be empty')
+            utilities.showErrorMsgBox(self, 'User name must not be empty')
             return False
 
         if len(self._lePasswd.text()) == 0:
-            self.__showErrorMsgBox('Password must not be empty')
+            utilities.showErrorMsgBox(self, 'Password must not be empty')
             return False
         return True
-
-    def __showErrorMsgBox(self, errorMsg):
-        QMessageBox.critical(self, 'Error!', errorMsg, QMessageBox.Ok)
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)

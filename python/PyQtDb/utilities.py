@@ -2,6 +2,10 @@
 
 from socket import inet_aton, error
 import re
+from PyQt5.QtWidgets import QMessageBox
+
+def showErrorMsgBox(widget, errorMsg):
+    QMessageBox.critical(widget, 'Error!', errorMsg, QMessageBox.Ok)
 
 def validIpAddress(ipAddress):
     if 'localhost' == ipAddress:
