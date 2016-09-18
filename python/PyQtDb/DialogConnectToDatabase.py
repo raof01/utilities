@@ -100,9 +100,3 @@ class DialogConnectToDataBase(QWidget):
             utilities.showErrorMsgBox(self, 'Password must not be empty')
             return False
         return True
-        
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = DialogConnectToDataBase()
-    ex.show()
-    sys.exit(app.exec_())
