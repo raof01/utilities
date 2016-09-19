@@ -13,6 +13,7 @@ class DialogConnectToDataBase(QDialog):
         super().__init__()
         self.__initConsts()
         self._initUI()
+        self.__setDefaultValues()
 
     def __initConsts(self):
         self.__LBL_USER_NAME = QLabel('UserName: ')
@@ -23,6 +24,10 @@ class DialogConnectToDataBase(QDialog):
         self.__TITLE = 'Connect to Database'
         self.__CONNECT = 'Connect'
         self.__CANCEL = 'Cancel'
+        self.__DEFAULT_IP = 'localhost'
+        self.__DEFAULT_PORT = '8889'
+        self.__DEFAULT_USER = 'test'
+        self.__DEFAULT_PASSWD = 'test123'
         
     def _initUI(self):
         vbox = QVBoxLayout()
@@ -74,6 +79,12 @@ class DialogConnectToDataBase(QDialog):
         hboxBtns.addWidget(self._okButton)
         hboxBtns.addWidget(self._cancelButton)
         return hboxBtns
+    
+    def __setDefaultValues(self):
+        self._leIpAddr.setText(self.__DEFAULT_IP)
+        self._lePort.setText(self.__DEFAULT_PORT)
+        self._leUserName.setText(self.__DEFAULT_USER)
+        self._lePasswd.setText(self.__DEFAULT_PASSWD)
 
     @pyqtSlot()
     def saveValues(self):
