@@ -2,12 +2,12 @@
 
 import sys
 import socket
-from PyQt5.QtWidgets import (QWidget, QPushButton, QLineEdit,
+from PyQt5.QtWidgets import (QDialog, QPushButton, QLineEdit,
     QApplication, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox)
 from PyQt5.QtCore import QRect, pyqtSlot
 import utilities
 
-class DialogConnectToDataBase(QWidget):
+class DialogConnectToDataBase(QDialog):
     
     def __init__(self):
         super().__init__()
@@ -34,6 +34,7 @@ class DialogConnectToDataBase(QWidget):
         self.setLayout(vbox)
         #self.setGeometry(self.__DIALOG_GEOMETRY)
         self.setWindowTitle(self.__TITLE)
+        self.setModal(True)
     
     def __initAddressLayout(self):
         hboxAddr = QHBoxLayout()

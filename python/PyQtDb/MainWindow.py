@@ -5,41 +5,57 @@ import sys
 import platform
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeView, QAction, qApp, QMenuBar, QMenu
 from PyQt5.QtGui import QIcon
-sys.path.append('.')
 from DialogConnectToDatabase import DialogConnectToDataBase
 
 class MainWindow(QMainWindow):
     
     def __init__(self):
         super().__init__()
+        self.__initConstants()
         self.initUI()
         
+    def __initConstants(self):
+        self.__TITLE = 'MySqlDbClient'
+        self.__CONNECT_PNG = 'connect.png'
+        self.__EXIT_PNG = 'exit.png'
+        self.__CONNECT_ACTION = '&Connect...'
+        self.__EXIT_ACTION = '&Exit'
+        self.__CONNECT_TOOLTIP = 'Connect to Database'
+        self.__EXIT_TOOLTIP = 'Exit Application'
+        self.__EXIT_SHORTCUT = 'Ctrl+Q'
+        self.__FILE_MENU = '&File'
+        self.__OSX_NAME = 'Darwin'
+        self.__WINDOW_WIDTH = 600
+        self.__WINDOW_HEIGHT = 600
         
     def initUI(self):
         self.__initMenuBar()
         self.statusBar()
-        self.setGeometry(300, 300, 300, 200)
-        self.setWindowTitle('MySqlDbClient')
+        rect = qApp.desktop().availableGeometry(self)
+        center = rect.center()
+        self.setGeometry(0, 0, self.__WINDOW_WIDTH, self.__WINDOW_HEIGHT)
+        self.move(center.x() - self.__WINDOW_HEIGHT * 0.5, center.y() - self.__WINDOW_HEIGHT * 0.5)
+        self.setWindowTitle(self.__TITLE)
         self.show()
 
     def __createConnectAction(self):
-        connectAction = QAction(QIcon('connect.png'), '&Connect...', self)
-        connectAction.setStatusTip('Connect to Database')
+        connectAction = QAction(QIcon(self.__CONNECT_PNG), self.__CONNECT_ACTION, self)
+        connectAction.setStatusTip(self.__CONNECT_TOOLTIP)
         connectAction.triggered.connect(self.__openConnectionDialog)
         return connectAction
 
     def __createQuitAction(self):
-        quitAction = QAction(QIcon('exit.png'), '&Exit', self)
-        quitAction.setShortcut('Ctrl+Q')
-        quitAction.setStatusTip('Exit Application')
+        quitAction = QAction(QIcon(self.__EXIT_PNG), self.__EXIT_ACTION, self)
+        quitAction.setShortcut(self.__EXIT_SHORTCUT)
+        quitAction.setStatusTip(self.__EXIT_TOOLTIP)
         quitAction.triggered.connect(qApp.quit)
         return quitAction
 
     def __initMenuBar(self):
         menubar = self.menuBar()
-        if platform.system() == 'Darwin':
+        if platform.system() == self.__OSX_NAME:
             menubar.setNativeMenuBar(False) # Very important for Mac OS X
-        fileMenu = menubar.addMenu('&File')
+        fileMenu = menubar.addMenu(self.__FILE_MENU)
         fileMenu.addAction(self.__createConnectAction())
         fileMenu.addAction(self.__createQuitAction())
 
