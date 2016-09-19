@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.__initConstants()
         self.initUI()
-        self.__dbConn = None
+        self.__dbAccess = None
         
     def __initConstants(self):
         self.__TITLE = 'MySqlDbClient'
@@ -95,8 +95,8 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def quit(self):
-        if not self.__dbConn is None:
-            self.__dbConn.disconnect()
+        if not self.__dbAccess is None:
+            self.__dbAccess.disconnect()
         qApp.quit()
 
 if __name__ == '__main__':
