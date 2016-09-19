@@ -108,11 +108,17 @@ class DialogConnectToDataBase(QDialog):
         if platform.system() == 'Darwin':
             dbAccess = MySqlAccess(self._leIpAddr.text(), int(self._lePort.text()))
             if dbAccess.connect(self._leUserName.text(), self._lePasswd.text()) != 0:
-                self.onDbConnectedFailed.emit(self._leIpAddr.text() + self.__DELIMITER + self._lePort.text())
+                self.onDbConnectedFailed.emit(self._leIpAddr.text() +
+                                              self.__DELIMITER +
+                                              self._lePort.text())
             else:
-                self.onDbConnected.emit(self._leIpAddr.text() + self.__DELIMITER + self._lePort.text(), dbAccess)
+                self.onDbConnected.emit(self._leIpAddr.text() +
+                                        self.__DELIMITER +
+                                        self._lePort.text(), dbAccess)
         else:
-            self.onDbConnectedFailed.emit(self._leIpAddr.text() + self.__DELIMITER + self._lePort.text() + ': Not supported')
+            self.onDbConnectedFailed.emit(self._leIpAddr.text() +
+                                          self.__DELIMITER +
+                                          self._lePort.text() + ': Not supported')
         self.close()
 
     def __validInput(self):
