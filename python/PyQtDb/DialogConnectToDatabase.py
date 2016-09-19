@@ -6,9 +6,18 @@ from PyQt5.QtWidgets import (QDialog, QPushButton, QLineEdit,
     QApplication, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox)
 from PyQt5.QtCore import QObject, QRect, pyqtSlot, pyqtSignal
 import utilities
+# MySQL Connector not available for Python v3.5 on windows
+#sys.path.append('..')
+#from MySqlAccess import MySqlAccess
 
 class DialogConnectToDataBase(QDialog):
+    '''
+    Dialog for connecting to MySQL Database
+    '''
+    # Signals
     onDbConnected = pyqtSignal(str)
+    onDbConnectedFailed = pyqtSignal(str)
+
     def __init__(self):
         super().__init__()
         self.__initConsts()
@@ -32,6 +41,7 @@ class DialogConnectToDataBase(QDialog):
         self.__DEFAULT_PORT = '8889'
         self.__DEFAULT_USER = 'test'
         self.__DEFAULT_PASSWD = 'test123'
+        self.__DELIMITER = ':'
         
     def _initUI(self):
         vbox = QVBoxLayout()
@@ -93,7 +103,12 @@ class DialogConnectToDataBase(QDialog):
     def connectToDb(self):
         if not self.__validInput():
             return
-        self.onDbConnected.emit(self._leIpAddr.text() + ":" + self._lePort.text())
+        #dbAccess = MySqlAccess(self._leIpAddr.text(), int(self._lePort.text()))
+        #if dbAccess.connect(self._leUserName.text, self._lePasswd.text()) is None:
+        #    self.onDbConnectedFailed.emit(self._leIpAddr.text() + self.__DELIMITER + self._lePort.text())
+        #else:
+        #    self.onDbConnected.emit(self._leIpAddr.text() + self.__DELIMITER + self._lePort.text())
+        self.onDbConnectedFailed.emit(self._leIpAddr.text() + self.__DELIMITER + self._lePort.text())
         self.close()
 
     def __validInput(self):

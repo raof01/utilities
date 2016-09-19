@@ -28,6 +28,7 @@ class MainWindow(QMainWindow):
         self.__OSX_NAME = 'Darwin'
         self.__STATUS_READY = 'Ready'
         self.__STATUS_CONNECTED = 'Connected to '
+        self.__STATUS_CONNECT_FAILED = 'Fail to connected to '
         self.__WINDOW_WIDTH = 600
         self.__WINDOW_HEIGHT = 600
         
@@ -67,11 +68,16 @@ class MainWindow(QMainWindow):
     def __openConnectionDialog(self):
         self.__connDialog = DialogConnectToDataBase()
         self.__connDialog.onDbConnected.connect(self.saveDbConnection)
+        self.__connDialog.onDbConnectedFailed.connect(self.reportDbConnectionFailure)
         self.__connDialog.show()
 
     @pyqtSlot(str) # TODO
     def saveDbConnection(self, arg1):
         self.statusBar().showMessage(self.__STATUS_CONNECTED + arg1)
+
+    @pyqtSlot(str)
+    def reportDbConnectionFailure(self, arg1):
+        self.statusBar().showMessage(self.__STATUS_CONNECT_FAILED + arg1)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

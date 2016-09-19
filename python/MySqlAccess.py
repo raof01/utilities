@@ -18,8 +18,7 @@ class MySqlAccess:
     def connect(self, user_name = None, user_passwd = None):
         if (user_name is None) or (user_passwd is None):
             return None
-        self._conn.connect(user = user_name, password = user_passwd)
-        return 0
+        return self._conn.connect(user = user_name, password = user_passwd)
     
     def disconnect(self):
         self._conn.close()
