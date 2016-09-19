@@ -24,6 +24,10 @@ class DialogConnectToDataBase(QDialog):
         self.__TITLE = 'Connect to Database'
         self.__CONNECT = 'Connect'
         self.__CANCEL = 'Cancel'
+        self.__ERR_MSG_INVALID_IP = 'Invalid IP Address: '
+        self.__ERR_MSG_INVALID_PORT = 'Invalid Port: '
+        self.__ERR_MSG_INVALID_USER = 'User name must not be empty'
+        self.__ERR_MSG_INVALID_PASSWD = 'Password must not be empty'
         self.__DEFAULT_IP = 'localhost'
         self.__DEFAULT_PORT = '8889'
         self.__DEFAULT_USER = 'test'
@@ -95,20 +99,20 @@ class DialogConnectToDataBase(QDialog):
 
     def __validInput(self):
         if not utilities.validIpAddress(self._leIpAddr.text()):
-            utilities.showErrorMsgBox(self, 'Invalid IP Address: ' +
+            utilities.showErrorMsgBox(self, self.__ERR_MSG_INVALID_IP +
                                     self._leIpAddr.text())
             return False
         
         if not utilities.validPort(self._lePort.text()):
-            utilities.showErrorMsgBox(self, 'Invalid Port: ' +
+            utilities.showErrorMsgBox(self, self.__ERR_MSG_INVALID_PORT +
                                     self._lePort.text())
             return False
 
         if len(self._leUserName.text()) == 0:
-            utilities.showErrorMsgBox(self, 'User name must not be empty')
+            utilities.showErrorMsgBox(self, self.__ERR_MSG_INVALID_USER)
             return False
 
         if len(self._lePasswd.text()) == 0:
-            utilities.showErrorMsgBox(self, 'Password must not be empty')
+            utilities.showErrorMsgBox(self, self.__ERR_MSG_INVALID_PASSWD)
             return False
         return True
