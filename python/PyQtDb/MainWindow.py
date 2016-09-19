@@ -14,6 +14,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.__initConstants()
         self.initUI()
+        self.__dbConn = None
         
     def __initConstants(self):
         self.__TITLE = 'MySqlDbClient'
@@ -54,7 +55,7 @@ class MainWindow(QMainWindow):
         quitAction = QAction(QIcon(self.__EXIT_PNG), self.__EXIT_ACTION, self)
         quitAction.setShortcut(self.__EXIT_SHORTCUT)
         quitAction.setStatusTip(self.__EXIT_TOOLTIP)
-        quitAction.triggered.connect(qApp.quit)
+        quitAction.triggered.connect(self.quit)
         return quitAction
 
     def __initMenuBar(self):
@@ -78,6 +79,12 @@ class MainWindow(QMainWindow):
     @pyqtSlot(str)
     def reportDbConnectionFailure(self, arg1):
         self.statusBar().showMessage(self.__STATUS_CONNECT_FAILED + arg1)
+
+    @pyqtSlot()
+    def quit(self):
+        if not self.__dbConn is None:
+            self.__dbConn.disconnect()
+        qApp.quit()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
