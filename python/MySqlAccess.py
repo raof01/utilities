@@ -18,7 +18,11 @@ class MySqlAccess:
     def connect(self, user_name = None, user_passwd = None):
         if (user_name is None) or (user_passwd is None):
             return None
-        return self._conn.connect(user = user_name, password = user_passwd)
+        try:
+            self._conn.connect(user = user_name, password = user_passwd)
+        except:
+            return None
+        return 0
     
     def disconnect(self):
         self._conn.close()
@@ -27,6 +31,8 @@ class MySqlAccess:
         cursor = self._conn.cursor()
         query = sql_stmt
         cursor.execute(query)
+        l = []
         for row in cursor:
-            print(row)
+            l.append(row)
         cursor.close()
+        return l

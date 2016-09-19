@@ -17,7 +17,7 @@ class DialogConnectToDataBase(QDialog):
     Dialog for connecting to MySQL Database
     '''
     # Signals
-    onDbConnected = pyqtSignal(str)
+    onDbConnected = pyqtSignal(str, MySqlAccess)
     onDbConnectedFailed = pyqtSignal(str)
 
     def __init__(self):
@@ -107,10 +107,10 @@ class DialogConnectToDataBase(QDialog):
             return
         if platform.system() == 'Darwin':
             dbAccess = MySqlAccess(self._leIpAddr.text(), int(self._lePort.text()))
-            if dbAccess.connect(self._leUserName.text, self._lePasswd.text()) is None:
+            if dbAccess.connect(self._leUserName.text(), self._lePasswd.text()) != 0:
                 self.onDbConnectedFailed.emit(self._leIpAddr.text() + self.__DELIMITER + self._lePort.text())
             else:
-                self.onDbConnected.emit(self._leIpAddr.text() + self.__DELIMITER + self._lePort.text())
+                self.onDbConnected.emit(self._leIpAddr.text() + self.__DELIMITER + self._lePort.text(), dbAccess)
         else:
             self.onDbConnectedFailed.emit(self._leIpAddr.text() + self.__DELIMITER + self._lePort.text() + ': Not supported')
         self.close()

@@ -7,6 +7,10 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeView, QAction, qApp,
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from DialogConnectToDatabase import DialogConnectToDataBase
+if platform.system() == 'Darwin':
+    # MySQL Connector not available for Python v3.5 on windows
+    sys.path.append('..')
+    from MySqlAccess import MySqlAccess
 
 class MainWindow(QMainWindow):
     
@@ -72,9 +76,18 @@ class MainWindow(QMainWindow):
         self.__connDialog.onDbConnectedFailed.connect(self.reportDbConnectionFailure)
         self.__connDialog.show()
 
-    @pyqtSlot(str) # TODO
-    def saveDbConnection(self, arg1):
-        self.statusBar().showMessage(self.__STATUS_CONNECTED + arg1)
+    @pyqtSlot(str, MySqlAccess) # TODO
+    def saveDbConnection(self, msg, dbAccess):
+        self.statusBar().showMessage(self.__STATUS_CONNECTED + msg)
+        self.__dbAccess = dbAccess
+        if self.__dbAccess:
+            #select_sql = '''SELECT * FROM test_DB.Products'''
+            select_sql = '''SHOW DATABASES'''
+            l = self.__dbAccess.query(select_sql)
+            s = ''
+            for v in l:
+                s = s + str(v)
+            self.statusBar().showMessage(s)
 
     @pyqtSlot(str)
     def reportDbConnectionFailure(self, arg1):

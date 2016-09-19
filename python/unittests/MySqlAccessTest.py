@@ -40,10 +40,11 @@ class MySqlAccessTest(unittest.TestCase):
         '''
         WARNING!!! This should have MySQL DB set up
         '''
-        self.__db_access.connect('test', 'test123')
-        #select_sql = '''SELECT * FROM test_DB.Products'''
-        select_sql = '''SHOW DATABASES'''
-        self.__db_access.query(select_sql)
+        if not self.__db_access.connect('test', 'test123') is None:
+            #select_sql = '''SELECT * FROM test_DB.Products'''
+            select_sql = '''SHOW DATABASES'''
+            self.__db_access.query(select_sql)
+            self.__db_access.disconnect()
 
 if __name__ == '__main__':
     unittest.main()
