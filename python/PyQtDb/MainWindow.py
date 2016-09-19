@@ -26,12 +26,14 @@ class MainWindow(QMainWindow):
         self.__EXIT_SHORTCUT = 'Ctrl+Q'
         self.__FILE_MENU = '&File'
         self.__OSX_NAME = 'Darwin'
+        self.__STATUS_READY = 'Ready'
+        self.__STATUS_CONNECTED = 'Connected to '
         self.__WINDOW_WIDTH = 600
         self.__WINDOW_HEIGHT = 600
         
     def initUI(self):
         self.__initMenuBar()
-        self.statusBar()
+        self.statusBar().showMessage(self.__STATUS_READY)
         self.__moveToCenter()
         self.setWindowTitle(self.__TITLE)
 
@@ -69,8 +71,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(str) # TODO
     def saveDbConnection(self, arg1):
-        # Dummy
-        print(arg1)
+        self.statusBar().showMessage(self.__STATUS_CONNECTED + arg1)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
