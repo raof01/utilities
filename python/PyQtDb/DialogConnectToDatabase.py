@@ -4,11 +4,11 @@ import sys
 import socket
 from PyQt5.QtWidgets import (QDialog, QPushButton, QLineEdit,
     QApplication, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox)
-from PyQt5.QtCore import QRect, pyqtSlot
+from PyQt5.QtCore import QObject, QRect, pyqtSlot, pyqtSignal
 import utilities
 
 class DialogConnectToDataBase(QDialog):
-    
+    onDbConnected = pyqtSignal(str)
     def __init__(self):
         super().__init__()
         self.__initConsts()
@@ -41,7 +41,6 @@ class DialogConnectToDataBase(QDialog):
         vbox.addLayout(self.__initPasswordLayout())
         vbox.addLayout(self. __initButtonLayout())
         self.setLayout(vbox)
-        #self.setGeometry(self.__DIALOG_GEOMETRY)
         self.setWindowTitle(self.__TITLE)
         self.setModal(True)
     
@@ -77,7 +76,7 @@ class DialogConnectToDataBase(QDialog):
     def __initButtonLayout(self):
         hboxBtns = QHBoxLayout()
         self._okButton = QPushButton(self.__CONNECT)
-        self._okButton.clicked.connect(self.saveValues)
+        self._okButton.clicked.connect(self.connectToDb)
         self._cancelButton = QPushButton(self.__CANCEL)
         self._cancelButton.clicked.connect(self.close)
         hboxBtns.addWidget(self._okButton)
@@ -91,10 +90,10 @@ class DialogConnectToDataBase(QDialog):
         self._lePasswd.setText(self.__DEFAULT_PASSWD)
 
     @pyqtSlot()
-    def saveValues(self):
+    def connectToDb(self):
         if not self.__validInput():
             return
-        # TODO: Save user input
+        self.onDbConnected.emit(self._leIpAddr.text() + ":" + self._lePort.text())
         self.close()
 
     def __validInput(self):

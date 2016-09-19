@@ -5,6 +5,7 @@ import sys
 import platform
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeView, QAction, qApp, QMenuBar, QMenu
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from DialogConnectToDatabase import DialogConnectToDataBase
 
 class MainWindow(QMainWindow):
@@ -31,12 +32,14 @@ class MainWindow(QMainWindow):
     def initUI(self):
         self.__initMenuBar()
         self.statusBar()
+        self.__moveToCenter()
+        self.setWindowTitle(self.__TITLE)
+
+    def __moveToCenter(self):
         rect = qApp.desktop().availableGeometry(self)
         center = rect.center()
         self.setGeometry(0, 0, self.__WINDOW_WIDTH, self.__WINDOW_HEIGHT)
         self.move(center.x() - self.__WINDOW_HEIGHT * 0.5, center.y() - self.__WINDOW_HEIGHT * 0.5)
-        self.setWindowTitle(self.__TITLE)
-        self.show()
 
     def __createConnectAction(self):
         connectAction = QAction(QIcon(self.__CONNECT_PNG), self.__CONNECT_ACTION, self)
@@ -61,9 +64,16 @@ class MainWindow(QMainWindow):
 
     def __openConnectionDialog(self):
         self.__connDialog = DialogConnectToDataBase()
+        self.__connDialog.onDbConnected.connect(self.saveDbConnection)
         self.__connDialog.show()
+
+    @pyqtSlot(str) # TODO
+    def saveDbConnection(self, arg1):
+        # Dummy
+        print(arg1)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = MainWindow()
+    window = MainWindow()
+    window.show()
     sys.exit(app.exec_())
