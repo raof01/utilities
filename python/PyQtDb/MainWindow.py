@@ -7,26 +7,27 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeView, QAction, qApp,
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from DialogConnectToDatabase import DialogConnectToDataBase
+import utilities
 if platform.system() == 'Darwin':
     # MySQL Connector not available for Python v3.5 on windows
     sys.path.append('..')
     from MySqlAccess import MySqlAccess
 
 class MainWindow(QMainWindow):
-    
-    @pyqtSlot(str, MySqlAccess) # TODO
-    def saveDbConnection(self, msg, dbAccess):
-        self.__setConnectionActionsEnabled(False)
-        self.statusBar().showMessage(self.__STATUS_CONNECTED + msg)
-        self.__dbAccess = dbAccess
-        if self.__dbAccess:
-            #select_sql = '''SELECT * FROM test_DB.Products'''
-            select_sql = '''SHOW DATABASES'''
-            l = self.__dbAccess.query(select_sql)
-            s = ''
-            for v in l:
-                s = s + str(v)
-            self.statusBar().showMessage(s)
+    if platform.system() == 'Darwin':
+        @pyqtSlot(str, MySqlAccess) # TODO
+        def saveDbConnection(self, msg, dbAccess):
+            self.__setConnectionActionsEnabled(False)
+            self.statusBar().showMessage(self.__STATUS_CONNECTED + msg)
+            self.__dbAccess = dbAccess
+            if self.__dbAccess:
+                #select_sql = '''SELECT * FROM test_DB.Products'''
+                select_sql = '''SHOW DATABASES'''
+                l = self.__dbAccess.query(select_sql)
+                s = ''
+                for v in l:
+                    s = s + str(v)
+                self.statusBar().showMessage(s)
 
     @pyqtSlot(str)
     def reportDbConnectionFailure(self, arg1):
@@ -61,10 +62,12 @@ class MainWindow(QMainWindow):
         self.__CONNECT_ACTION = '&Connect...'
         self.__DISCONNECT_ACTION = '&Disconnect'
         self.__EXIT_ACTION = '&Exit'
+        self.__ABOUT_ACTION = '&About...'
         self.__CONNECT_TOOLTIP = 'Connect to Database'
         self.__EXIT_TOOLTIP = 'Exit Application'
         self.__EXIT_SHORTCUT = 'Ctrl+Q'
         self.__FILE_MENU = '&File'
+        self.__HELP_MENU = '&Help'
         self.__OSX_NAME = 'Darwin'
         self.__STATUS_READY = 'Ready'
         self.__STATUS_CONNECTED = 'Connected to '
@@ -107,15 +110,32 @@ class MainWindow(QMainWindow):
         menubar = self.menuBar()
         if platform.system() == self.__OSX_NAME:
             menubar.setNativeMenuBar(False) # Very important for Mac OS X
-        fileMenu = menubar.addMenu(self.__FILE_MENU)
+        self.__initFileMenu(menubar)
+        self.__initHelpMenu(menubar)
+        self.__setConnectionActionsEnabled(True)
+        
+    def __initFileMenu(self, menuBar):
+        fileMenu = menuBar.addMenu(self.__FILE_MENU)
         fileMenu.addAction(self.__createConnectAction())
         fileMenu.addAction(self.__createDisconnectAction())
         fileMenu.addAction(self.__createQuitAction())
-        self.__setConnectionActionsEnabled(True)
+        
+    def __initHelpMenu(self, menuBar):
+        helpMenu = menuBar.addMenu(self.__HELP_MENU)
+        helpMenu.addAction(self.__createAboutAction())
+
+    def __createAboutAction(self):
+        aboutAction = QAction(self.__ABOUT_ACTION, self)
+        aboutAction.triggered.connect(self.showAboutDialog)
+        return aboutAction
+
+    def showAboutDialog(self):
+        utilities.showInfoMsgBox(self, 'MySQL client', 'Written in Python\nBy Felix Rao\nCopyright (c) 2016')
 
     def __openConnectionDialog(self):
         self.__connDialog = DialogConnectToDataBase()
-        self.__connDialog.onDbConnected.connect(self.saveDbConnection)
+        if platform.system() == 'Darwin':
+            self.__connDialog.onDbConnected.connect(self.saveDbConnection)
         self.__connDialog.onDbConnectedFailed.connect(self.reportDbConnectionFailure)
         self.__connDialog.show()
 

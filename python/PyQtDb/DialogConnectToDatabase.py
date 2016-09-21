@@ -17,7 +17,8 @@ class DialogConnectToDataBase(QDialog):
     Dialog for connecting to MySQL Database
     '''
     # Signals
-    onDbConnected = pyqtSignal(str, MySqlAccess)
+    if platform.system() == 'Darwin':
+        onDbConnected = pyqtSignal(str, MySqlAccess)
     onDbConnectedFailed = pyqtSignal(str)
 
     def __init__(self):

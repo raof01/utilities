@@ -7,6 +7,9 @@ from PyQt5.QtWidgets import QMessageBox
 def showErrorMsgBox(widget, errorMsg):
     QMessageBox.critical(widget, 'Error!', errorMsg, QMessageBox.Ok)
 
+def showInfoMsgBox(widget, msg1, msg2):
+    QMessageBox.information(widget, msg1, msg2, QMessageBox.Ok)
+
 def validIpAddress(ipAddress):
     if 'localhost' == ipAddress:
         return True
