@@ -3,8 +3,9 @@
 
 import sys
 import platform
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeView, QAction, qApp, QMenuBar, QMenu
-from PyQt5.QtGui import QIcon
+from PyQt5 import Qt
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeView, QAction, qApp, QMenuBar, QMenu, QHBoxLayout, QWidget
+from PyQt5.QtGui import QIcon, QStandardItemModel, QStandardItem
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from DialogConnectToDatabase import DialogConnectToDataBase
 import utilities
@@ -20,14 +21,34 @@ class MainWindow(QMainWindow):
             self.__setConnectionActionsEnabled(False)
             self.statusBar().showMessage(self.__STATUS_CONNECTED + msg)
             self.__dbAccess = dbAccess
-            if self.__dbAccess:
-                #select_sql = '''SELECT * FROM test_DB.Products'''
-                select_sql = '''SHOW DATABASES'''
-                l = self.__dbAccess.query(select_sql)
-                s = ''
-                for v in l:
-                    s = s + str(v)
-                self.statusBar().showMessage(s)
+            self.__listDatabases()
+    
+    def __listDatabases(self):
+        if self.__dbAccess:
+            #select_sql = '''SELECT * FROM test_DB.Products'''
+            select_sql = '''SHOW DATABASES'''
+            l = self.__dbAccess.query(select_sql)
+            self.statusBar().showMessage('Connected')
+            self.__createDbTreeView(l)
+
+    def __createDbTreeView(self, vals):
+        if (vals is None) or (len(vals) == 0):
+            return
+        if self.__treeView is None:
+            self.__treeView = QTreeView()
+        model = QStandardItemModel()
+        model.setHorizontalHeaderItem(0, QStandardItem('Database'))
+        for v, in vals:
+            model.appendRow(QStandardItem(str(v)))
+        self.__treeView.setModel(model)
+        #self.__treeView.setExpanded(self.__treeView.currentIndex(), True)
+        self.mainLayout = QHBoxLayout()
+        self.mainLayout.addWidget(self.__treeView)
+        self.centralWidget = QWidget()
+        self.centralWidget.setLayout(self.mainLayout)
+        # set central widget
+        self.setCentralWidget(self.centralWidget)
+        self.statusBar().showMessage('Ready')
 
     @pyqtSlot(str)
     def reportDbConnectionFailure(self, arg1):
@@ -40,6 +61,7 @@ class MainWindow(QMainWindow):
 
     def __disconnect(self):
         if not self.__dbAccess is None:
+            self.__treeView.model().clear()
             self.__dbAccess.disconnect()
             self.__setConnectionActionsEnabled(True)
             self.statusBar().showMessage(self.__STATUS_DISCONNECTED)
@@ -81,6 +103,7 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(self.__STATUS_READY)
         self.__moveToCenter()
         self.setWindowTitle(self.__TITLE)
+        self.__treeView = None
 
     def __moveToCenter(self):
         rect = qApp.desktop().availableGeometry(self)
