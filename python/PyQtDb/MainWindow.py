@@ -73,7 +73,7 @@ class MainWindow(QMainWindow):
         self.__STATUS_CONNECTED = 'Connected to '
         self.__STATUS_CONNECT_FAILED = 'Fail to connected to '
         self.__STATUS_DISCONNECTED = 'Disconnected'
-        self.__WINDOW_WIDTH = 600
+        self.__WINDOW_WIDTH = 800
         self.__WINDOW_HEIGHT = 600
         
     def initUI(self):
