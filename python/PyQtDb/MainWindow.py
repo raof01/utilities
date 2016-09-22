@@ -57,6 +57,7 @@ class MainWindow(QMainWindow):
     def __disconnect(self):
         if not self.__dbAccess is None:
             self.__treeView.model().clear()
+            self.__treeView.model().setHorizontalHeaderItem(0, QStandardItem(self.__DATABASE))
             self.__dbAccess.disconnect()
             self.__setConnectionActionsEnabled(True)
             self.statusBar().showMessage(self.__STATUS_DISCONNECTED)
@@ -72,12 +73,15 @@ class MainWindow(QMainWindow):
         self.__dbAccess = None
         
     def __initConstants(self):
+        # Window and menu
         self.__TITLE = 'MySqlDbClient'
         self.__CONNECT_PNG = 'connect.png'
         self.__DISCONNECT_PNG = 'disconnect.png'
         self.__EXIT_PNG = 'exit.png'
         self.__CONNECT_ACTION = '&Connect...'
+        self.__CONNECT_SHORTCUT = 'Ctrl+O'
         self.__DISCONNECT_ACTION = '&Disconnect'
+        self.__DISCONNECT_SHORTCUT = 'Ctrl+D'
         self.__EXIT_ACTION = '&Exit'
         self.__ABOUT_ACTION = '&About...'
         self.__CONNECT_TOOLTIP = 'Connect to Database'
@@ -86,15 +90,23 @@ class MainWindow(QMainWindow):
         self.__FILE_MENU = '&File'
         self.__HELP_MENU = '&Help'
         self.__OSX_NAME = 'Darwin'
+        self.__WINDOW_WIDTH = 1024
+        self.__WINDOW_HEIGHT = 800
+
+        # Status
         self.__STATUS_READY = 'Ready'
         self.__STATUS_CONNECTED = 'Connected to '
         self.__STATUS_CONNECT_FAILED = 'Fail to connected to '
         self.__STATUS_DISCONNECTED = 'Disconnected'
         self.__DATABASE = 'Database'
-        self.__WINDOW_WIDTH = 1024
-        self.__WINDOW_HEIGHT = 800
+
+        # SQL
         self.__SQL_SHOW_DB = 'SHOW DATABASES'
         self.__SQL_SHOW_TABLES = 'SHOW TABLES IN '
+
+        # Info
+        self.__PROG_NAME = 'MySQL client'
+        self.__PROG_INFO = 'Written in Python\nBy Felix Rao\nCopyright (c) 2016'
         
     def initUI(self):
         self.__initMenuBar()
@@ -136,11 +148,13 @@ class MainWindow(QMainWindow):
         self.__connectAction = QAction(QIcon(self.__CONNECT_PNG), self.__CONNECT_ACTION, self)
         self.__connectAction.setStatusTip(self.__CONNECT_TOOLTIP)
         self.__connectAction.triggered.connect(self.__openConnectionDialog)
+        self.__connectAction.setShortcut(self.__CONNECT_SHORTCUT)
         return self.__connectAction
 
     def __createDisconnectAction(self):
         self.__disconnAction = QAction(QIcon(self.__DISCONNECT_PNG), self.__DISCONNECT_ACTION, self)
         self.__disconnAction.triggered.connect(self.__disconnect)
+        self.__disconnAction.setShortcut(self.__DISCONNECT_SHORTCUT)
         return self.__disconnAction
 
     def __createQuitAction(self):
@@ -174,11 +188,11 @@ class MainWindow(QMainWindow):
         return aboutAction
 
     def showAboutDialog(self):
-        utilities.showInfoMsgBox(self, 'MySQL client', 'Written in Python\nBy Felix Rao\nCopyright (c) 2016')
+        utilities.showInfoMsgBox(self, self.__PROG_NAME, self.__PROG_INFO)
 
     def __openConnectionDialog(self):
         self.__connDialog = DialogConnectToDataBase()
-        if platform.system() == 'Darwin':
+        if platform.system() == self.__OSX_NAME:
             self.__connDialog.onDbConnected.connect(self.saveDbConnection)
         self.__connDialog.onDbConnectedFailed.connect(self.reportDbConnectionFailure)
         self.__connDialog.show()
