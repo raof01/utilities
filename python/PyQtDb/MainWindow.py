@@ -7,7 +7,7 @@ from PyQt5 import Qt
 from PyQt5.QtWidgets import (QMainWindow, QApplication,
     QTreeView, QAction, qApp, QMenuBar,
     QMenu, QHBoxLayout, QWidget,
-    QTableView)
+    QTableView, QSizePolicy)
 from PyQt5.QtGui import QIcon, QStandardItemModel, QStandardItem
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from DialogConnectToDatabase import DialogConnectToDataBase
@@ -91,8 +91,8 @@ class MainWindow(QMainWindow):
         self.__STATUS_CONNECT_FAILED = 'Fail to connected to '
         self.__STATUS_DISCONNECTED = 'Disconnected'
         self.__DATABASE = 'Database'
-        self.__WINDOW_WIDTH = 800
-        self.__WINDOW_HEIGHT = 600
+        self.__WINDOW_WIDTH = 1024
+        self.__WINDOW_HEIGHT = 800
         self.__SQL_SHOW_DB = 'SHOW DATABASES'
         self.__SQL_SHOW_TABLES = 'SHOW TABLES IN '
         
@@ -105,6 +105,10 @@ class MainWindow(QMainWindow):
 
     def __initTreeView(self):
         self.__treeView = QTreeView()
+        self.__treeView.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        rect = self.__treeView.geometry()
+        rect.setWidth(self.__WINDOW_WIDTH / 4)
+        self.__treeView.setGeometry(rect)
         model = QStandardItemModel()
         model.setHorizontalHeaderItem(0, QStandardItem(self.__DATABASE))
         self.__treeView.setModel(model)
