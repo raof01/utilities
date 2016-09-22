@@ -4,7 +4,10 @@
 import sys
 import platform
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeView, QAction, qApp, QMenuBar, QMenu, QHBoxLayout, QWidget
+from PyQt5.QtWidgets import (QMainWindow, QApplication,
+    QTreeView, QAction, qApp, QMenuBar,
+    QMenu, QHBoxLayout, QWidget,
+    QTableView)
 from PyQt5.QtGui import QIcon, QStandardItemModel, QStandardItem
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from DialogConnectToDatabase import DialogConnectToDataBase
@@ -35,7 +38,7 @@ class MainWindow(QMainWindow):
     def __listDatabases(self):
         if self.__dbAccess:
             l = self.__dbAccess.query(self.__SQL_SHOW_DB)
-            self.__createDbTreeView(l)
+            self.__populateData(l)
     
     def __getTablesInDb(self, dbName):
             item = QStandardItem(dbName)
@@ -44,23 +47,11 @@ class MainWindow(QMainWindow):
                 item.appendRow(QStandardItem(str(v)))
             return item
 
-    def __createDbTreeView(self, vals):
+    def __populateData(self, vals):
         if (vals is None) or (len(vals) == 0):
             return
-        if self.__treeView is None:
-            self.__treeView = QTreeView()
-        model = QStandardItemModel()
-        model.setHorizontalHeaderItem(0, QStandardItem(self.__DATABASE))
         for v, in vals:
-            model.appendRow(self.__getTablesInDb(str(v)))
-        self.__treeView.setModel(model)
-        #self.__treeView.setExpanded(self.__treeView.currentIndex(), True)
-        self.mainLayout = QHBoxLayout()
-        self.mainLayout.addWidget(self.__treeView)
-        self.centralWidget = QWidget()
-        self.centralWidget.setLayout(self.mainLayout)
-        # set central widget
-        self.setCentralWidget(self.centralWidget)
+            self.__treeView.model().appendRow(self.__getTablesInDb(str(v)))
         self.statusBar().showMessage(self.__STATUS_READY)
 
     def __disconnect(self):
@@ -110,7 +101,26 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(self.__STATUS_READY)
         self.__moveToCenter()
         self.setWindowTitle(self.__TITLE)
-        self.__treeView = None
+        self.__initDataView()
+
+    def __initTreeView(self):
+        self.__treeView = QTreeView()
+        model = QStandardItemModel()
+        model.setHorizontalHeaderItem(0, QStandardItem(self.__DATABASE))
+        self.__treeView.setModel(model)
+
+    def __initTableView(self):
+        self.__tableView = QTableView()
+
+    def __initDataView(self):
+        self.__initTreeView()
+        self.__initTableView()
+        self.mainLayout = QHBoxLayout()
+        self.mainLayout.addWidget(self.__treeView)
+        self.mainLayout.addWidget(self.__tableView)
+        self.centralWidget = QWidget()
+        self.centralWidget.setLayout(self.mainLayout)
+        self.setCentralWidget(self.centralWidget)
 
     def __moveToCenter(self):
         rect = qApp.desktop().availableGeometry(self)
