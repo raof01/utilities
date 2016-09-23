@@ -3,7 +3,7 @@
 
 import sys
 import platform
-from PyQt5 import Qt
+from os import sep
 from PyQt5.QtWidgets import (QMainWindow, QApplication,
                              QTreeView, QAction, qApp, QMenuBar,
                              QMenu, QHBoxLayout, QWidget,
@@ -76,10 +76,11 @@ class MainWindow(QMainWindow):
 
     def __init_constants(self):
         # Window and menu
+        self.__IMAGE_PATH = 'images' + sep
         self.__TITLE = 'MySqlDbClient'
-        self.__CONNECT_PNG = 'connect.png'
-        self.__DISCONNECT_PNG = 'disconnect.png'
-        self.__EXIT_PNG = 'exit.png'
+        self.__CONNECT_PNG = self.__IMAGE_PATH + 'connect.png'
+        self.__DISCONNECT_PNG = self.__IMAGE_PATH + 'disconnect.png'
+        self.__EXIT_PNG = self.__IMAGE_PATH + 'exit.png'
         self.__CONNECT_ACTION = '&Connect...'
         self.__CONNECT_SHORTCUT = 'Ctrl+O'
         self.__DISCONNECT_ACTION = '&Disconnect'
