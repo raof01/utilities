@@ -110,7 +110,7 @@ class DialogConnectToDataBase(QDialog):
             return
         if platform.system() == 'Darwin':
             db_access = MySqlAccess(self._leIpAddr.text(), int(self._lePort.text()))
-            if db_access.connect(self._leUserName.text(), self._lePasswd.text()) != 0:
+            if not db_access.connect(self._leUserName.text(), self._lePasswd.text()):
                 self.onDbConnectedFailed.emit(self._leIpAddr.text() +
                                               self.__DELIMITER +
                                               self._lePort.text())

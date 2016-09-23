@@ -17,14 +17,14 @@ class MySqlAccess:
         self._conn = MySQLConnection(host=db_host,
                                      port=db_port)
 
-    def connect(self, user_name=None, user_password=None):
+    def connect(self, user_name=None, user_password=None) -> bool:
         if (user_name is None) or (user_password is None):
-            return None
+            return False
         try:
             self._conn.connect(user=user_name, password=user_password)
         except:
-            return None
-        return 0
+            return False
+        return True
 
     def disconnect(self):
         self._conn.close()

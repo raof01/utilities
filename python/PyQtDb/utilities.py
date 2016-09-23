@@ -13,7 +13,7 @@ def show_info_msg_box(widget, msg1, msg2):
     QMessageBox.information(widget, msg1, msg2, QMessageBox.Ok)
 
 
-def valid_ip_address(ip_address):
+def valid_ip_address(ip_address) -> bool:
     if 'localhost' == ip_address:
         return True
     if len(ip_address.split(sep='.')) != 4:
@@ -25,12 +25,12 @@ def valid_ip_address(ip_address):
         return False
 
 
-def valid_port(port_str):
+def valid_port(port_str) -> bool:
     matcher = re.compile('[0-9]{1,5}')
-    try:
-        (start, end) = matcher.match(port_str).span()
-    except:
+    match = matcher.match(port_str)
+    if match is None:
         return False
+    (start, end) = match.span()
     if start != 0 or end != len(port_str):
         return False
     port = int(port_str)
