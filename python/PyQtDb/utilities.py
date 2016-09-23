@@ -4,33 +4,36 @@ from socket import inet_aton, error
 import re
 from PyQt5.QtWidgets import QMessageBox
 
-def showErrorMsgBox(widget, errorMsg):
-    QMessageBox.critical(widget, 'Error!', errorMsg, QMessageBox.Ok)
 
-def showInfoMsgBox(widget, msg1, msg2):
+def show_error_message_box(widget, error_message):
+    QMessageBox.critical(widget, 'Error!', error_message, QMessageBox.Ok)
+
+
+def show_info_msg_box(widget, msg1, msg2):
     QMessageBox.information(widget, msg1, msg2, QMessageBox.Ok)
 
-def validIpAddress(ipAddress):
-    if 'localhost' == ipAddress:
+
+def valid_ip_address(ip_address):
+    if 'localhost' == ip_address:
         return True
-    if len(ipAddress.split(sep='.')) != 4:
+    if len(ip_address.split(sep='.')) != 4:
         return False
     try:
-        inet_aton(ipAddress)
+        inet_aton(ip_address)
         return True
     except error:
         return False
 
-def validPort(portStr):
+
+def valid_port(port_str):
     matcher = re.compile('[0-9]{1,5}')
     try:
-        (start, end) = matcher.match(portStr).span()
+        (start, end) = matcher.match(port_str).span()
     except:
         return False
-    if start != 0 or end != len(portStr):
+    if start != 0 or end != len(port_str):
         return False
-    port = int(portStr)
+    port = int(port_str)
     if port > 65535 or port <= 0:
         return False
     return True
-

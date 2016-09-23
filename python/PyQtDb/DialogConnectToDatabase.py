@@ -3,19 +3,21 @@
 import sys
 import socket
 from PyQt5.QtWidgets import (QDialog, QPushButton, QLineEdit,
-    QApplication, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox)
+                             QApplication, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox)
 from PyQt5.QtCore import QObject, QRect, pyqtSlot, pyqtSignal
 import utilities
 import platform
+
 if platform.system() == 'Darwin':
     # MySQL Connector not available for Python v3.5 on windows
     sys.path.append('..')
     from MySqlAccess import MySqlAccess
 
+
 class DialogConnectToDataBase(QDialog):
-    '''
+    """
     Dialog for connecting to MySQL Database
-    '''
+    """
     # Signals
     if platform.system() == 'Darwin':
         onDbConnected = pyqtSignal(str, MySqlAccess)
@@ -23,11 +25,11 @@ class DialogConnectToDataBase(QDialog):
 
     def __init__(self):
         super().__init__()
-        self.__initConsts()
-        self._initUI()
-        self.__setDefaultValues()
+        self.__init_consts()
+        self._init_ui()
+        self.__set_default_values()
 
-    def __initConsts(self):
+    def __init_consts(self):
         self.__LBL_USER_NAME = QLabel('UserName: ')
         self.__LBL_PASSWORD = QLabel('Password: ')
         self.__DIALOG_GEOMETRY = QRect(300, 300, 300, 120)
@@ -45,99 +47,99 @@ class DialogConnectToDataBase(QDialog):
         self.__DEFAULT_USER = 'test'
         self.__DEFAULT_PASSWD = 'test123'
         self.__DELIMITER = ':'
-        
-    def _initUI(self):
+
+    def _init_ui(self):
         vbox = QVBoxLayout()
         vbox.setSpacing(5)
-        vbox.addLayout(self.__initAddressLayout())
-        vbox.addLayout(self.__initUserNameLayout())
-        vbox.addLayout(self.__initPasswordLayout())
-        vbox.addLayout(self. __initButtonLayout())
+        vbox.addLayout(self.__init_address_layout())
+        vbox.addLayout(self.__init_user_name_layout())
+        vbox.addLayout(self.__init_password_layout())
+        vbox.addLayout(self.__init_button_layout())
         self.setLayout(vbox)
         self.setWindowTitle(self.__TITLE)
         self.setModal(True)
-    
-    def __initAddressLayout(self):
-        hboxAddr = QHBoxLayout()
-        hboxAddr
+
+    def __init_address_layout(self) -> QHBoxLayout:
+        hbox_addr = QHBoxLayout()
+        hbox_addr
         self._leIpAddr = QLineEdit(self)
         self._lePort = QLineEdit(self)
-        hboxAddr.addWidget(self.__LBL_IP)
-        hboxAddr.addWidget(self._leIpAddr)
-        hboxAddr.addWidget(self.__LBL_PORT)
-        hboxAddr.addWidget(self._lePort)
-        return hboxAddr
+        hbox_addr.addWidget(self.__LBL_IP)
+        hbox_addr.addWidget(self._leIpAddr)
+        hbox_addr.addWidget(self.__LBL_PORT)
+        hbox_addr.addWidget(self._lePort)
+        return hbox_addr
 
-    def __initUserNameLayout(self):
-        hboxUserName = QHBoxLayout()
+    def __init_user_name_layout(self) -> QHBoxLayout:
+        hbox_user_name = QHBoxLayout()
         self._leUserName = QLineEdit(self)
-        hboxUserName.addWidget(self.__LBL_USER_NAME)
-        hboxUserName.addWidget(self._leUserName)
-        return hboxUserName
+        hbox_user_name.addWidget(self.__LBL_USER_NAME)
+        hbox_user_name.addWidget(self._leUserName)
+        return hbox_user_name
 
-    def __initPasswordLayout(self):
-        hboxPasswd = QHBoxLayout()
+    def __init_password_layout(self) -> QHBoxLayout:
+        hbox_passwd = QHBoxLayout()
         self._lePasswd = QLineEdit(self)
         self._lePasswd.setEchoMode(QLineEdit.Password)
         self._lePasswd.setGeometry(self._leUserName.geometry())
         self._lePasswd.move(self._lePasswd.geometry().top(),
                             self._leUserName.geometry().left())
-        hboxPasswd.addWidget(self.__LBL_PASSWORD)
-        hboxPasswd.addWidget(self._lePasswd)
-        return hboxPasswd
+        hbox_passwd.addWidget(self.__LBL_PASSWORD)
+        hbox_passwd.addWidget(self._lePasswd)
+        return hbox_passwd
 
-    def __initButtonLayout(self):
-        hboxBtns = QHBoxLayout()
+    def __init_button_layout(self) -> QHBoxLayout:
+        hbox_btns = QHBoxLayout()
         self._okButton = QPushButton(self.__CONNECT)
-        self._okButton.clicked.connect(self.connectToDb)
+        self._okButton.clicked.connect(self.connect_to_db)
         self._cancelButton = QPushButton(self.__CANCEL)
         self._cancelButton.clicked.connect(self.close)
-        hboxBtns.addWidget(self._okButton)
-        hboxBtns.addWidget(self._cancelButton)
-        return hboxBtns
-    
-    def __setDefaultValues(self):
+        hbox_btns.addWidget(self._okButton)
+        hbox_btns.addWidget(self._cancelButton)
+        return hbox_btns
+
+    def __set_default_values(self):
         self._leIpAddr.setText(self.__DEFAULT_IP)
         self._lePort.setText(self.__DEFAULT_PORT)
         self._leUserName.setText(self.__DEFAULT_USER)
         self._lePasswd.setText(self.__DEFAULT_PASSWD)
 
     @pyqtSlot()
-    def connectToDb(self):
-        if not self.__validInput():
+    def connect_to_db(self):
+        if not self.__validate_input():
             return
         if platform.system() == 'Darwin':
-            dbAccess = MySqlAccess(self._leIpAddr.text(), int(self._lePort.text()))
-            if dbAccess.connect(self._leUserName.text(), self._lePasswd.text()) != 0:
+            db_access = MySqlAccess(self._leIpAddr.text(), int(self._lePort.text()))
+            if db_access.connect(self._leUserName.text(), self._lePasswd.text()) != 0:
                 self.onDbConnectedFailed.emit(self._leIpAddr.text() +
                                               self.__DELIMITER +
                                               self._lePort.text())
             else:
                 self.onDbConnected.emit(self._leIpAddr.text() +
                                         self.__DELIMITER +
-                                        self._lePort.text(), dbAccess)
+                                        self._lePort.text(), db_access)
         else:
             self.onDbConnectedFailed.emit(self._leIpAddr.text() +
                                           self.__DELIMITER +
                                           self._lePort.text() + ': Not supported')
         self.close()
 
-    def __validInput(self):
-        if not utilities.validIpAddress(self._leIpAddr.text()):
-            utilities.showErrorMsgBox(self, self.__ERR_MSG_INVALID_IP +
-                                    self._leIpAddr.text())
+    def __validate_input(self) -> bool:
+        if not utilities.valid_ip_address(self._leIpAddr.text()):
+            utilities.show_error_message_box(self, self.__ERR_MSG_INVALID_IP +
+                                             self._leIpAddr.text())
             return False
-        
-        if not utilities.validPort(self._lePort.text()):
-            utilities.showErrorMsgBox(self, self.__ERR_MSG_INVALID_PORT +
-                                    self._lePort.text())
+
+        if not utilities.valid_port(self._lePort.text()):
+            utilities.show_error_message_box(self, self.__ERR_MSG_INVALID_PORT +
+                                             self._lePort.text())
             return False
 
         if len(self._leUserName.text()) == 0:
-            utilities.showErrorMsgBox(self, self.__ERR_MSG_INVALID_USER)
+            utilities.show_error_message_box(self, self.__ERR_MSG_INVALID_USER)
             return False
 
         if len(self._lePasswd.text()) == 0:
-            utilities.showErrorMsgBox(self, self.__ERR_MSG_INVALID_PASSWD)
+            utilities.show_error_message_box(self, self.__ERR_MSG_INVALID_PASSWD)
             return False
         return True
