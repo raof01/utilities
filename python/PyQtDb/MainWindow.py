@@ -45,14 +45,14 @@ class MainWindow(QMainWindow):
     def __get_db_tables(self, db_name) -> QStandardItem:
         item = QStandardItem(db_name)
         l = self.__dbAccess.query(self.__SQL_SHOW_TABLES + db_name)
-        for v, in l:
+        for (v,) in l:
             item.appendRow(QStandardItem(str(v)))
         return item
 
     def __populate_data(self, vals):
         if (vals is None) or (len(vals) == 0):
             return
-        for v, in vals:
+        for (v,) in vals:
             self.__treeView.model().appendRow(self.__get_db_tables(str(v)))
         self.statusBar().showMessage(self.__STATUS_READY)
 
