@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from mysql import connector
+from mysql.connector import errors
 from mysql.connector import MySQLConnection
 
 default_host = 'localhost'
@@ -22,7 +22,7 @@ class MySqlAccess:
             return False
         try:
             self._conn.connect(user=user_name, password=user_password)
-        except:
+        except errors.ProgrammingError:
             return False
         return True
 

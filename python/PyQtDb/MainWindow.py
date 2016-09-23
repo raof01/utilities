@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication,
                              QMenu, QHBoxLayout, QWidget,
                              QTableView, QSizePolicy)
 from PyQt5.QtGui import QIcon, QStandardItemModel, QStandardItem
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtCore import pyqtSlot, QModelIndex
 from DialogConnectToDatabase import DialogConnectToDataBase
 import utilities
 
@@ -37,6 +37,18 @@ class MainWindow(QMainWindow):
         self.__disconnect()
         qApp.quit()
 
+    @pyqtSlot(QModelIndex)
+    def __on_tree_view_click(self, index):
+        if index.isValid():
+            null_item = self.__treeView.model().itemData(QModelIndex())
+            parent = self.__treeView.model().itemData(index.parent())
+            # parent of top item is null_item
+            if parent == null_item:
+                return
+            db_name = self.__treeView.model().itemData(index.parent())[0]
+            table_name = self.__treeView.model().itemData(index)[0]
+            print(str(self.__get_columns_of_table(table_name, db_name)))
+
     def __list_databases(self):
         if self.__dbAccess:
             l = self.__dbAccess.query(self.__SQL_SHOW_DB)
@@ -55,6 +67,10 @@ class MainWindow(QMainWindow):
         for (v,) in vals:
             self.__treeView.model().appendRow(self.__get_db_tables(str(v)))
         self.statusBar().showMessage(self.__STATUS_READY)
+
+    def __get_columns_of_table(self, table_name, db_name) -> [list]:
+        l = self.__dbAccess.query(self.__SQL_SHOW_COLUMNS_FMT.format(table_name, db_name))
+        return l
 
     def __disconnect(self):
         if self.__dbAccess is not None:
@@ -106,6 +122,8 @@ class MainWindow(QMainWindow):
         # SQL
         self.__SQL_SHOW_DB = 'SHOW DATABASES'
         self.__SQL_SHOW_TABLES = 'SHOW TABLES IN '
+        self.__SQL_SHOW_COLUMNS_FMT = 'SHOW COLUMNS IN {0} IN {1}'
+        self.__SQL_USE_DATABASE = 'USE '
 
         # Info
         self.__PROG_NAME = 'MySQL client'
@@ -121,6 +139,7 @@ class MainWindow(QMainWindow):
     def __init_tree_view(self):
         self.__treeView = QTreeView()
         self.__treeView.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        self.__treeView.clicked.connect(self.__on_tree_view_click)
         rect = self.__treeView.geometry()
         rect.setWidth(self.__WINDOW_WIDTH / 4)
         self.__treeView.setGeometry(rect)
