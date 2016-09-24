@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication,
                              QMenu, QHBoxLayout, QWidget,
                              QTableView, QSizePolicy)
 from PyQt5.QtGui import QIcon, QStandardItemModel, QStandardItem
-from PyQt5.QtCore import pyqtSlot, QModelIndex
+from PyQt5.QtCore import pyqtSlot, QModelIndex, Qt
 from DialogConnectToDatabase import DialogConnectToDataBase
 import utilities
 
@@ -47,7 +47,9 @@ class MainWindow(QMainWindow):
                 return
             db_name = self.__treeView.model().itemData(index.parent())[0]
             table_name = self.__treeView.model().itemData(index)[0]
-            print(str(self.__get_columns_of_table(table_name, db_name)))
+            lst = self.__get_columns_of_table(table_name, db_name)
+            self.__set_up_table_head(lst)
+            self.__populate_table_data(self.__get_table_data(lst, db_name, table_name))
 
     def __list_databases(self):
         if self.__dbAccess:
@@ -69,12 +71,39 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(self.__STATUS_READY)
 
     def __get_columns_of_table(self, table_name, db_name) -> [list]:
-        l = self.__dbAccess.query(self.__SQL_SHOW_COLUMNS_FMT.format(table_name, db_name))
+        l = []
+        for v in self.__dbAccess.query(self.__SQL_SHOW_COLUMNS_FMT.format(table_name, db_name)):
+            l.append(v[0])
         return l
+
+    def __set_up_table_head(self, lst):
+        if not isinstance(lst, list) or not lst:
+            return
+        self.__tableView.model().clear()
+        self.__tableView.model().setColumnCount(len(lst))
+        for (i, v) in zip(range(len(lst)), lst):
+            self.__tableView.model().setHeaderData(i, Qt.Horizontal, v)
+
+    def __get_table_data(self, lst, db_name, table_name):
+        sql = 'SELECT '
+        for v in lst:
+            sql += v + ', '
+        query = sql[0:len(sql) - len(', ')] + ' FROM ' + db_name + '.' + table_name
+        return self.__dbAccess.query(query)
+
+    def __populate_table_data(self, lst):
+        if not isinstance(lst, list) or not lst:
+            return
+        for values in lst:
+            items = []
+            for v in values:
+                items.append(QStandardItem(str(v)))
+            self.__tableView.model().appendRow(items)
 
     def __disconnect(self):
         if self.__dbAccess is not None:
             self.__treeView.model().clear()
+            self.__tableView.model().clear()
             self.__treeView.model().setHorizontalHeaderItem(0, QStandardItem(self.__DATABASE))
             self.__dbAccess.disconnect()
             self.__set_connection_actions_enabled(True)
@@ -149,6 +178,7 @@ class MainWindow(QMainWindow):
 
     def __init_table_view(self):
         self.__tableView = QTableView()
+        self.__tableView.setModel(QStandardItemModel())
 
     def __init_data_view(self):
         self.__init_tree_view()
