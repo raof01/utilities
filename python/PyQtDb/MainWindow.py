@@ -21,8 +21,9 @@ if platform.system() == 'Darwin':
 
 class MainWindow(QMainWindow):
     # Signals
-    on_db_connection_saved = pyqtSignal()
+    db_connection_saved = pyqtSignal()
     table_selected = pyqtSignal(str, str)
+    sort = pyqtSignal(str, str, str, list)
 
     # Slots
     if platform.system() == 'Darwin':
@@ -31,7 +32,7 @@ class MainWindow(QMainWindow):
             self.__set_connection_actions_enabled(False)
             self.statusBar().showMessage(self.__STATUS_CONNECTED + msg)
             self.__dbAccess = db_access
-            self.on_db_connection_saved.emit()
+            self.db_connection_saved.emit()
 
     @pyqtSlot(str)
     def report_db_connection_failure(self, arg1):
@@ -50,9 +51,9 @@ class MainWindow(QMainWindow):
             # parent of top item is null_item
             if parent == null_item:
                 return
-            db_name = self.__treeView.model().itemData(index.parent())[0]
-            table_name = self.__treeView.model().itemData(index)[0]
-            self.table_selected.emit(db_name, table_name)
+            self.__current_db_name = self.__treeView.model().itemData(index.parent())[0]
+            self.__current_table_name = self.__treeView.model().itemData(index)[0]
+            self.table_selected.emit(self.__current_db_name, self.__current_table_name)
 
     @pyqtSlot()
     def __list_databases(self):
@@ -64,7 +65,7 @@ class MainWindow(QMainWindow):
     def __list_table_data(self, db_name, table_name):
         lst = self.__get_columns_of_table(table_name, db_name)
         self.__set_up_table_head(lst)
-        self.__populate_table_data(self.__get_table_data(lst, db_name, table_name))
+        self.__populate_table_data(self.__get_table_data(lst, db_name, table_name, lst[0]))
 
     @pyqtSlot()
     def __open_connection_dialog(self):
@@ -78,12 +79,31 @@ class MainWindow(QMainWindow):
     def show_about_dialog(self):
         utilities.show_info_msg_box(self, self.__PROG_NAME, self.__PROG_INFO)
 
+    @pyqtSlot(int)
+    def __table_header_clicked(self, index):
+        self.__flip_order()
+        lst = []
+        for i in range(self.__tableView.horizontalHeader().count()):
+            lst.append(str(self.__tableView.model().headerData(i, Qt.Horizontal)))
+        self.sort.emit(self.__current_db_name, self.__current_table_name,
+                       str(self.__tableView.model().headerData(index, Qt.Horizontal)), lst)
+
+    @pyqtSlot(str, str, str, list)
+    def __sort_data(self, db_name, table_name, column_name, column_names):
+        if str is None or not list:
+            return
+        self.__tableView.model().clear()
+        self.__set_up_table_head(column_names)
+        self.__populate_table_data(self.__get_table_data(column_names, db_name, table_name, column_name))
+
     def __setup_event_handlers(self):
-        self.on_db_connection_saved.connect(self.__list_databases)
+        self.db_connection_saved.connect(self.__list_databases)
         self.table_selected.connect(self.__list_table_data)
         self.__treeView.clicked.connect(self.__on_tree_view_click)
         self.__connectAction.triggered.connect(self.__open_connection_dialog)
         self.__disconnAction.triggered.connect(self.__disconnect)
+        self.sort.connect(self.__sort_data)
+        self.__tableView.horizontalHeader().sectionClicked.connect(self.__table_header_clicked)
 
     def __get_db_tables(self, db_name) -> QStandardItem:
         item = QStandardItem(db_name)
@@ -91,6 +111,12 @@ class MainWindow(QMainWindow):
         for (v,) in l:
             item.appendRow(QStandardItem(str(v)))
         return item
+
+    def __flip_order(self):
+        if self.__order == self.__SQL_ORDER_DESC:
+            self.__order = self.__SQL_ORDER_ASC
+        else:
+            self.__order = self.__SQL_ORDER_DESC
 
     def __populate_data(self, vals):
         if (vals is None) or (len(vals) == 0):
@@ -113,12 +139,17 @@ class MainWindow(QMainWindow):
         for (i, v) in zip(range(len(lst)), lst):
             self.__tableView.model().setHeaderData(i, Qt.Horizontal, v)
 
-    def __get_table_data(self, lst, db_name, table_name):
-        sql = 'SELECT '
-        for v in lst:
-            sql += v + ', '
-        query = sql[0:len(sql) - len(', ')] + ' FROM ' + db_name + '.' + table_name + ' ORDER BY ' + lst[0] + ' DESC'
-        return self.__dbAccess.query(query)
+    def __compose_select(self, db_name, table_name, columns, order_column) -> str:
+        sql = self.__SQL_SELECT
+        for v in columns:
+            sql += v + self.__SQL_COLUMN_SEP
+        query = sql[0:len(sql) - len(self.__SQL_COLUMN_SEP)]
+        query += self.__SQL_FROM + db_name + self.__SQL_DOT + table_name
+        query += self.__SQL_ORDER_BY + order_column + self.__order
+        return query
+
+    def __get_table_data(self, lst, db_name, table_name, order_column):
+        return self.__dbAccess.query(self.__compose_select(db_name, table_name, lst, order_column))
 
     def __populate_table_data(self, lst):
         if not isinstance(lst, list) or not lst:
@@ -151,6 +182,9 @@ class MainWindow(QMainWindow):
         self.init_ui()
         self.__setup_event_handlers()
         self.__dbAccess = None
+        self.__current_db_name = None
+        self.__current_table_name = None
+        self.__order = self.__SQL_ORDER_DESC
 
     def __init_constants(self):
         # Window and menu
@@ -186,6 +220,13 @@ class MainWindow(QMainWindow):
         self.__SQL_SHOW_TABLES = 'SHOW TABLES IN '
         self.__SQL_SHOW_COLUMNS_FMT = 'SHOW COLUMNS IN {0} IN {1}'
         self.__SQL_USE_DATABASE = 'USE '
+        self.__SQL_ORDER_DESC = ' DESC'
+        self.__SQL_ORDER_ASC = ' ASC'
+        self.__SQL_SELECT = 'SELECT '
+        self.__SQL_COLUMN_SEP = ', '
+        self.__SQL_FROM = ' FROM '
+        self.__SQL_DOT = '.'
+        self.__SQL_ORDER_BY = ' ORDER BY '
 
         # Info
         self.__PROG_NAME = 'MySQL client'
