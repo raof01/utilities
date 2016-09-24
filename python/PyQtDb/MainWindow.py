@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication,
                              QHBoxLayout, QWidget,
                              QTableView, QSizePolicy)
 from PyQt5.QtGui import QIcon, QStandardItemModel, QStandardItem
-from PyQt5.QtCore import pyqtSlot, QModelIndex, Qt
+from PyQt5.QtCore import pyqtSlot, QModelIndex, Qt, pyqtSignal
 from DialogConnectToDatabase import DialogConnectToDataBase
 import utilities
 
@@ -20,13 +20,18 @@ if platform.system() == 'Darwin':
 
 
 class MainWindow(QMainWindow):
+    # Signals
+    on_db_connection_saved = pyqtSignal()
+    table_selected = pyqtSignal(str, str)
+
+    # Slots
     if platform.system() == 'Darwin':
-        @pyqtSlot(str, MySqlAccess)  # TODO
+        @pyqtSlot(str, MySqlAccess)
         def save_db_connection(self, msg, db_access):
             self.__set_connection_actions_enabled(False)
             self.statusBar().showMessage(self.__STATUS_CONNECTED + msg)
             self.__dbAccess = db_access
-            self.__list_databases()
+            self.on_db_connection_saved.emit()
 
     @pyqtSlot(str)
     def report_db_connection_failure(self, arg1):
@@ -47,14 +52,38 @@ class MainWindow(QMainWindow):
                 return
             db_name = self.__treeView.model().itemData(index.parent())[0]
             table_name = self.__treeView.model().itemData(index)[0]
-            lst = self.__get_columns_of_table(table_name, db_name)
-            self.__set_up_table_head(lst)
-            self.__populate_table_data(self.__get_table_data(lst, db_name, table_name))
+            self.table_selected.emit(db_name, table_name)
 
+    @pyqtSlot()
     def __list_databases(self):
         if self.__dbAccess:
             l = self.__dbAccess.query(self.__SQL_SHOW_DB)
             self.__populate_data(l)
+
+    @pyqtSlot(str, str)
+    def __list_table_data(self, db_name, table_name):
+        lst = self.__get_columns_of_table(table_name, db_name)
+        self.__set_up_table_head(lst)
+        self.__populate_table_data(self.__get_table_data(lst, db_name, table_name))
+
+    @pyqtSlot()
+    def __open_connection_dialog(self):
+        self.__connDialog = DialogConnectToDataBase()
+        if platform.system() == self.__OSX_NAME:
+            self.__connDialog.onDbConnected.connect(self.save_db_connection)
+        self.__connDialog.onDbConnectedFailed.connect(self.report_db_connection_failure)
+        self.__connDialog.show()
+
+    @pyqtSlot()
+    def show_about_dialog(self):
+        utilities.show_info_msg_box(self, self.__PROG_NAME, self.__PROG_INFO)
+
+    def __setup_event_handlers(self):
+        self.on_db_connection_saved.connect(self.__list_databases)
+        self.table_selected.connect(self.__list_table_data)
+        self.__treeView.clicked.connect(self.__on_tree_view_click)
+        self.__connectAction.triggered.connect(self.__open_connection_dialog)
+        self.__disconnAction.triggered.connect(self.__disconnect)
 
     def __get_db_tables(self, db_name) -> QStandardItem:
         item = QStandardItem(db_name)
@@ -100,11 +129,14 @@ class MainWindow(QMainWindow):
                 items.append(QStandardItem(str(v)))
             self.__tableView.model().appendRow(items)
 
+    def __clear_contents(self):
+        self.__treeView.model().clear()
+        self.__tableView.model().clear()
+        self.__treeView.model().setHorizontalHeaderItem(0, QStandardItem(self.__DATABASE))
+
     def __disconnect(self):
         if self.__dbAccess is not None:
-            self.__treeView.model().clear()
-            self.__tableView.model().clear()
-            self.__treeView.model().setHorizontalHeaderItem(0, QStandardItem(self.__DATABASE))
+            self.__clear_contents()
             self.__dbAccess.disconnect()
             self.__set_connection_actions_enabled(True)
             self.statusBar().showMessage(self.__STATUS_DISCONNECTED)
@@ -117,6 +149,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.__init_constants()
         self.init_ui()
+        self.__setup_event_handlers()
         self.__dbAccess = None
 
     def __init_constants(self):
@@ -168,7 +201,6 @@ class MainWindow(QMainWindow):
     def __init_tree_view(self):
         self.__treeView = QTreeView()
         self.__treeView.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-        self.__treeView.clicked.connect(self.__on_tree_view_click)
         rect = self.__treeView.geometry()
         rect.setWidth(self.__WINDOW_WIDTH / 4)
         self.__treeView.setGeometry(rect)
@@ -199,13 +231,11 @@ class MainWindow(QMainWindow):
     def __create_connect_action(self) -> QAction:
         self.__connectAction = QAction(QIcon(self.__CONNECT_PNG), self.__CONNECT_ACTION, self)
         self.__connectAction.setStatusTip(self.__CONNECT_TOOLTIP)
-        self.__connectAction.triggered.connect(self.__open_connection_dialog)
         self.__connectAction.setShortcut(self.__CONNECT_SHORTCUT)
         return self.__connectAction
 
     def __create_disconnect_action(self) -> QAction:
         self.__disconnAction = QAction(QIcon(self.__DISCONNECT_PNG), self.__DISCONNECT_ACTION, self)
-        self.__disconnAction.triggered.connect(self.__disconnect)
         self.__disconnAction.setShortcut(self.__DISCONNECT_SHORTCUT)
         return self.__disconnAction
 
@@ -238,16 +268,6 @@ class MainWindow(QMainWindow):
         about_action = QAction(self.__ABOUT_ACTION, self)
         about_action.triggered.connect(self.show_about_dialog)
         return about_action
-
-    def show_about_dialog(self):
-        utilities.show_info_msg_box(self, self.__PROG_NAME, self.__PROG_INFO)
-
-    def __open_connection_dialog(self):
-        self.__connDialog = DialogConnectToDataBase()
-        if platform.system() == self.__OSX_NAME:
-            self.__connDialog.onDbConnected.connect(self.save_db_connection)
-        self.__connDialog.onDbConnectedFailed.connect(self.report_db_connection_failure)
-        self.__connDialog.show()
 
 
 if __name__ == '__main__':
