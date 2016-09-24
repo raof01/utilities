@@ -58,8 +58,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def __list_databases(self):
         if self.__dbAccess:
-            l = self.__dbAccess.query(self.__SQL_SHOW_DB)
-            self.__populate_data(l)
+            self.__populate_data(self.__dbAccess.get_database())
 
     @pyqtSlot(str, str)
     def __list_table_data(self, db_name, table_name):
@@ -81,7 +80,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(int)
     def __table_header_clicked(self, index):
-        self.__flip_order()
+        self.__dbAccess.flip_order()
         lst = []
         for i in range(self.__tableView.horizontalHeader().count()):
             lst.append(str(self.__tableView.model().headerData(i, Qt.Horizontal)))
@@ -107,16 +106,9 @@ class MainWindow(QMainWindow):
 
     def __get_db_tables(self, db_name) -> QStandardItem:
         item = QStandardItem(db_name)
-        l = self.__dbAccess.query(self.__SQL_SHOW_TABLES + db_name)
-        for (v,) in l:
+        for (v,) in self.__dbAccess.get_tables(db_name):
             item.appendRow(QStandardItem(str(v)))
         return item
-
-    def __flip_order(self):
-        if self.__order == self.__SQL_ORDER_DESC:
-            self.__order = self.__SQL_ORDER_ASC
-        else:
-            self.__order = self.__SQL_ORDER_DESC
 
     def __populate_data(self, vals):
         if (vals is None) or (len(vals) == 0):
@@ -127,7 +119,7 @@ class MainWindow(QMainWindow):
 
     def __get_columns_of_table(self, table_name, db_name) -> [list]:
         l = []
-        for v in self.__dbAccess.query(self.__SQL_SHOW_COLUMNS_FMT.format(table_name, db_name)):
+        for v in self.__dbAccess.get_columns_of_table(db_name, table_name):
             l.append(v[0])
         return l
 
@@ -139,17 +131,8 @@ class MainWindow(QMainWindow):
         for (i, v) in zip(range(len(lst)), lst):
             self.__tableView.model().setHeaderData(i, Qt.Horizontal, v)
 
-    def __compose_select(self, db_name, table_name, columns, order_column) -> str:
-        sql = self.__SQL_SELECT
-        for v in columns:
-            sql += v + self.__SQL_COLUMN_SEP
-        query = sql[0:len(sql) - len(self.__SQL_COLUMN_SEP)]
-        query += self.__SQL_FROM + db_name + self.__SQL_DOT + table_name
-        query += self.__SQL_ORDER_BY + order_column + self.__order
-        return query
-
     def __get_table_data(self, lst, db_name, table_name, order_column):
-        return self.__dbAccess.query(self.__compose_select(db_name, table_name, lst, order_column))
+        return self.__dbAccess.query(self.__dbAccess.compose_select(db_name, table_name, lst, order_column))
 
     def __populate_table_data(self, lst):
         if not isinstance(lst, list) or not lst:
@@ -184,7 +167,6 @@ class MainWindow(QMainWindow):
         self.__dbAccess = None
         self.__current_db_name = None
         self.__current_table_name = None
-        self.__order = self.__SQL_ORDER_DESC
 
     def __init_constants(self):
         # Window and menu
@@ -214,19 +196,6 @@ class MainWindow(QMainWindow):
         self.__STATUS_CONNECT_FAILED = 'Fail to connected to '
         self.__STATUS_DISCONNECTED = 'Disconnected'
         self.__DATABASE = 'Database'
-
-        # SQL
-        self.__SQL_SHOW_DB = 'SHOW DATABASES'
-        self.__SQL_SHOW_TABLES = 'SHOW TABLES IN '
-        self.__SQL_SHOW_COLUMNS_FMT = 'SHOW COLUMNS IN {0} IN {1}'
-        self.__SQL_USE_DATABASE = 'USE '
-        self.__SQL_ORDER_DESC = ' DESC'
-        self.__SQL_ORDER_ASC = ' ASC'
-        self.__SQL_SELECT = 'SELECT '
-        self.__SQL_COLUMN_SEP = ', '
-        self.__SQL_FROM = ' FROM '
-        self.__SQL_DOT = '.'
-        self.__SQL_ORDER_BY = ' ORDER BY '
 
         # Info
         self.__PROG_NAME = 'MySQL client'
