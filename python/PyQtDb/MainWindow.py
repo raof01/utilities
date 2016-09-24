@@ -5,8 +5,8 @@ import sys
 import platform
 from os import sep
 from PyQt5.QtWidgets import (QMainWindow, QApplication,
-                             QTreeView, QAction, qApp, QMenuBar,
-                             QMenu, QHBoxLayout, QWidget,
+                             QTreeView, QAction, qApp,
+                             QHBoxLayout, QWidget,
                              QTableView, QSizePolicy)
 from PyQt5.QtGui import QIcon, QStandardItemModel, QStandardItem
 from PyQt5.QtCore import pyqtSlot, QModelIndex, Qt
@@ -88,7 +88,7 @@ class MainWindow(QMainWindow):
         sql = 'SELECT '
         for v in lst:
             sql += v + ', '
-        query = sql[0:len(sql) - len(', ')] + ' FROM ' + db_name + '.' + table_name
+        query = sql[0:len(sql) - len(', ')] + ' FROM ' + db_name + '.' + table_name + ' ORDER BY ' + lst[0] + ' DESC'
         return self.__dbAccess.query(query)
 
     def __populate_table_data(self, lst):
