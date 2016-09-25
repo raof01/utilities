@@ -17,12 +17,32 @@ class DialogSqlQuery(QDialog):
     """
     Dialog for Sql query
     """
+    # Slots
+    @pyqtSlot()
+    def __populate_select_template(self):
+        db_name = ' '
+        table_name = ' '
+        columns = ' '
+        if self.__db_name is not None:
+            db_name = self.__db_name
+        if self.__table_name is not None:
+            table_name = self.__table_name
+        if self.__columns is not None:
+            columns = self.__columns
+        self.__sql_input.setPlainText(self.__db_access.compose_select(db_name, table_name, columns, columns[0]))
 
-    def __init__(self, db_access):
+    @pyqtSlot()
+    def __populate_update_template(self):
+        pass
+
+    def __init__(self, db_access, table_name, db_name, columns):
         super().__init__()
         self.__init_consts()
-        self._init_ui()
-        self._db_access = db_access
+        self.__init_ui()
+        self.__db_access = db_access
+        self.__table_name = table_name
+        self.__db_name = db_name
+        self.__columns = columns
 
     def __init_consts(self):
         self.__LBL_SQL_QUERY= QLabel('SQL: ')
@@ -38,7 +58,7 @@ class DialogSqlQuery(QDialog):
         self.__HEIGHT = 600
         self.__SQL_INPUT_HEIGHT = 100
 
-    def _init_ui(self):
+    def __init_ui(self):
         self.setLayout(self.__init_layout())
         self.__setup_event_handlers()
         self.setWindowTitle(self.__TITLE)
@@ -81,3 +101,4 @@ class DialogSqlQuery(QDialog):
 
     def __setup_event_handlers(self):
         self.__cancel_button.clicked.connect(self.close)
+        self.__select_button.clicked.connect(self.__populate_select_template)

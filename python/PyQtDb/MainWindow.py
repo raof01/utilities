@@ -63,9 +63,11 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(str, str)
     def __list_table_data(self, db_name, table_name):
-        lst = self.__get_columns_of_table(table_name, db_name)
-        self.__set_up_table_head(lst)
-        self.__populate_table_data(self.__get_table_data(lst, db_name, table_name, lst[0]))
+        self.__columns_of_current_table = self.__get_columns_of_table(table_name, db_name)
+        self.__set_up_table_head(self.__columns_of_current_table)
+        self.__populate_table_data(self.__get_table_data(self.__columns_of_current_table,
+                                                         db_name, table_name,
+                                                         self.__columns_of_current_table[0]))
 
     @pyqtSlot()
     def __open_connection_dialog(self):
@@ -98,7 +100,10 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def __open_query_dialog(self):
-        self.__query_dialog = DialogSqlQuery(self.__dbAccess)
+        self.__query_dialog = DialogSqlQuery(self.__dbAccess,
+                                             self.__current_table_name,
+                                             self.__current_db_name,
+                                             self.__columns_of_current_table)
         self.__query_dialog.show()
 
     def __setup_event_handlers(self):
@@ -175,6 +180,7 @@ class MainWindow(QMainWindow):
         self.__dbAccess = None
         self.__current_db_name = None
         self.__current_table_name = None
+        self.__columns_of_current_table = None
 
     def __init_constants(self):
         # Window and menu

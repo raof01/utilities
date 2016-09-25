@@ -33,6 +33,9 @@ class MySqlAccess:
         self.__SQL_DOT = '.'
         self.__SQL_ORDER_BY = ' ORDER BY '
 
+        # SQL templates
+        self.SQL_TEMPLATE_SELECT = 'SELECT {0} FROM {1} WHERE 1'
+
     def connect(self, user_name=None, user_password=None) -> bool:
         if (user_name is None) or (user_password is None):
             return False
