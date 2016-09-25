@@ -22,7 +22,6 @@ class DialogSqlQuery(QDialog):
         super().__init__()
         self.__init_consts()
         self._init_ui()
-        self.__set_default_values()
 
     def __init_consts(self):
         self.__LBL_SQL_QUERY= QLabel('SQL')

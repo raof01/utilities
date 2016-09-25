@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication,
 from PyQt5.QtGui import QIcon, QStandardItemModel, QStandardItem
 from PyQt5.QtCore import pyqtSlot, QModelIndex, Qt, pyqtSignal
 from DialogConnectToDatabase import DialogConnectToDataBase
+from DialogSqlQuery import DialogSqlQuery
 import utilities
 
 if platform.system() == 'Darwin':
@@ -95,12 +96,18 @@ class MainWindow(QMainWindow):
         self.__set_up_table_head(column_names)
         self.__populate_table_data(self.__get_table_data(column_names, db_name, table_name, column_name))
 
+    @pyqtSlot()
+    def __open_query_dialog(self):
+        self.__query_dialog = DialogSqlQuery()
+        self.__query_dialog.show()
+
     def __setup_event_handlers(self):
         self.db_connection_saved.connect(self.__list_databases)
         self.table_selected.connect(self.__list_table_data)
         self.__treeView.clicked.connect(self.__on_tree_view_click)
         self.__connectAction.triggered.connect(self.__open_connection_dialog)
         self.__disconnAction.triggered.connect(self.__disconnect)
+        self.__query_action.triggered.connect(self.__open_query_dialog)
         self.sort.connect(self.__sort_data)
         self.__tableView.horizontalHeader().sectionClicked.connect(self.__table_header_clicked)
 
@@ -158,6 +165,7 @@ class MainWindow(QMainWindow):
     def __set_connection_actions_enabled(self, enabled):
         self.__disconnAction.setEnabled(not enabled)
         self.__connectAction.setEnabled(enabled)
+        self.__query_action.setEnabled(not enabled)
 
     def __init__(self):
         super().__init__()
@@ -185,6 +193,9 @@ class MainWindow(QMainWindow):
         self.__EXIT_TOOLTIP = 'Exit Application'
         self.__EXIT_SHORTCUT = 'Ctrl+Q'
         self.__FILE_MENU = '&File'
+        self.__QUERY_PNG = self.__IMAGE_PATH + 'query.png'
+        self.__QUERY_ACTION = '&Query'
+        self.__DISCONNECT_SHORTCUT = 'Ctrl+S'
         self.__HELP_MENU = '&Help'
         self.__OSX_NAME = 'Darwin'
         self.__WINDOW_WIDTH = 1024
@@ -249,6 +260,11 @@ class MainWindow(QMainWindow):
         self.__disconnAction.setShortcut(self.__DISCONNECT_SHORTCUT)
         return self.__disconnAction
 
+    def __create_query_action(self) -> QAction:
+        self.__query_action = QAction(QIcon(self.__QUERY_PNG), self.__QUERY_ACTION, self)
+        self.__query_action.setShortcut(self.__DISCONNECT_SHORTCUT)
+        return self.__query_action
+
     def __create_quit_action(self) -> QAction:
         quit_action = QAction(QIcon(self.__EXIT_PNG), self.__EXIT_ACTION, self)
         quit_action.setShortcut(self.__EXIT_SHORTCUT)
@@ -267,6 +283,7 @@ class MainWindow(QMainWindow):
     def __init_file_menu(self, menu_bar):
         file_menu = menu_bar.addMenu(self.__FILE_MENU)
         file_menu.addAction(self.__create_connect_action())
+        file_menu.addAction(self.__create_query_action())
         file_menu.addAction(self.__create_disconnect_action())
         file_menu.addAction(self.__create_quit_action())
 
