@@ -35,6 +35,10 @@ class DialogSqlQuery(QDialog):
     def __populate_update_template(self):
         pass
 
+    @pyqtSlot()
+    def __execute_query(self):
+        self.__sql_input.setPlainText(str(self.__db_access.query(self.__sql_input.toPlainText())))
+
     def __init__(self, db_access, table_name, db_name, columns):
         super().__init__()
         self.__init_consts()
@@ -102,3 +106,4 @@ class DialogSqlQuery(QDialog):
     def __setup_event_handlers(self):
         self.__cancel_button.clicked.connect(self.close)
         self.__select_button.clicked.connect(self.__populate_select_template)
+        self.__go_button.clicked.connect(self.__execute_query)
