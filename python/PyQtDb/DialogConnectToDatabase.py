@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import socket
 from PyQt5.QtWidgets import (QDialog, QPushButton, QLineEdit,
-                             QApplication, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox)
-from PyQt5.QtCore import QObject, QRect, pyqtSlot, pyqtSignal
+                             QHBoxLayout, QVBoxLayout, QLabel)
+from PyQt5.QtCore import QRect, pyqtSlot, pyqtSignal
 import utilities
 import platform
 
