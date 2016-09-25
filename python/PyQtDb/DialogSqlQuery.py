@@ -18,10 +18,11 @@ class DialogSqlQuery(QDialog):
     Dialog for Sql query
     """
 
-    def __init__(self):
+    def __init__(self, db_access):
         super().__init__()
         self.__init_consts()
         self._init_ui()
+        self._db_access = db_access
 
     def __init_consts(self):
         self.__LBL_SQL_QUERY= QLabel('SQL')

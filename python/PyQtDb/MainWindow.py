@@ -98,7 +98,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def __open_query_dialog(self):
-        self.__query_dialog = DialogSqlQuery()
+        self.__query_dialog = DialogSqlQuery(self.__dbAccess)
         self.__query_dialog.show()
 
     def __setup_event_handlers(self):
@@ -195,7 +195,7 @@ class MainWindow(QMainWindow):
         self.__FILE_MENU = '&File'
         self.__QUERY_PNG = self.__IMAGE_PATH + 'query.png'
         self.__QUERY_ACTION = '&Query'
-        self.__DISCONNECT_SHORTCUT = 'Ctrl+S'
+        self.__QUERY_SHORTCUT = 'Ctrl+S'
         self.__HELP_MENU = '&Help'
         self.__OSX_NAME = 'Darwin'
         self.__WINDOW_WIDTH = 1024
@@ -262,7 +262,7 @@ class MainWindow(QMainWindow):
 
     def __create_query_action(self) -> QAction:
         self.__query_action = QAction(QIcon(self.__QUERY_PNG), self.__QUERY_ACTION, self)
-        self.__query_action.setShortcut(self.__DISCONNECT_SHORTCUT)
+        self.__query_action.setShortcut(self.__QUERY_SHORTCUT)
         return self.__query_action
 
     def __create_quit_action(self) -> QAction:
