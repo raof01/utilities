@@ -20,20 +20,16 @@ class DialogSqlQuery(QDialog):
     # Slots
     @pyqtSlot()
     def __populate_select_template(self):
-        db_name = ' '
-        table_name = ' '
-        columns = ' '
-        if self.__db_name is not None:
-            db_name = self.__db_name
-        if self.__table_name is not None:
-            table_name = self.__table_name
-        if self.__columns is not None:
-            columns = self.__columns
-        self.__sql_input.setPlainText(self.__db_access.compose_select(db_name, table_name, columns, columns[0]))
+        self.__sql_input.setPlainText(self.__db_access.compose_select(self.__db_name,
+                                                                      self.__table_name,
+                                                                      self.__columns,
+                                                                      self.__columns[0]))
 
     @pyqtSlot()
     def __populate_update_template(self):
-        pass
+        self.__sql_input.setPlainText(self.__db_access.compose_update(self.__db_name,
+                                                                      self.__table_name,
+                                                                      self.__columns))
 
     @pyqtSlot()
     def __execute_query(self):
@@ -43,14 +39,28 @@ class DialogSqlQuery(QDialog):
     def __clear_query_input(self):
         self.__sql_input.clear()
 
+    @pyqtSlot()
+    def __populate_delete_template(self):
+        self.__sql_input.setPlainText(self.__db_access.compose_delete(self.__db_name, self.__table_name))
+
+    @pyqtSlot()
+    def __populate_insert_template(self):
+        self.__sql_input.setPlainText(self.__db_access.compose_insert(self.__db_name, self.__table_name, self.__columns))
+
+    @staticmethod
+    def none_to_space(s=None) -> str:
+        if s is None:
+            return ' '
+        return s
+
     def __init__(self, db_access, table_name, db_name, columns):
         super().__init__()
         self.__init_consts()
         self.__init_ui()
         self.__db_access = db_access
-        self.__table_name = table_name
-        self.__db_name = db_name
-        self.__columns = columns
+        self.__table_name = self.none_to_space(table_name)
+        self.__db_name = self.none_to_space(db_name)
+        self.__columns = self.none_to_space(columns)
 
     def __init_consts(self):
         self.__LBL_SQL_QUERY= QLabel('SQL: ')
@@ -115,3 +125,6 @@ class DialogSqlQuery(QDialog):
         self.__select_button.clicked.connect(self.__populate_select_template)
         self.__go_button.clicked.connect(self.__execute_query)
         self.__clear_button.clicked.connect(self.__clear_query_input)
+        self.__update_button.clicked.connect(self.__populate_update_template)
+        self.__delete_button.clicked.connect(self.__populate_delete_template)
+        self.__insert_button.clicked.connect(self.__populate_insert_template)

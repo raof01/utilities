@@ -32,6 +32,16 @@ class MySqlAccess:
         self.__SQL_FROM = ' FROM '
         self.__SQL_DOT = '.'
         self.__SQL_ORDER_BY = ' ORDER BY '
+        self.__SQL_UPDATE = 'UPDATE {0} SET '
+        self.__SQL_WHERE = ' WHERE '
+        self.__SQL_ASSIGN = '='
+        self.__SQL_DELETE = 'DELETE FROM {0}'
+        self.__SQL_INSERT = 'INSERT INTO {0}('
+        self.__SQL_INSERT_VALUES = ') VALUES ('
+        self.__SQL_INSERT_END = ')'
+        self.__SQL_OPEN_BRACKET = '['
+        self.__SQL_CLOSE_BRACKET = ']'
+        self.__SQL_VALUE = 'value-'
 
         # SQL templates
         self.SQL_TEMPLATE_SELECT = 'SELECT {0} FROM {1} WHERE 1'
@@ -75,7 +85,39 @@ class MySqlAccess:
         sql = self.__SQL_SELECT
         for v in columns:
             sql += v + self.__SQL_COLUMN_SEP
-        query = sql[0:len(sql) - len(self.__SQL_COLUMN_SEP)]
+        query = self.__remove_trailing_sep(sql)
         query += self.__SQL_FROM + db_name + self.__SQL_DOT + table_name
         query += self.__SQL_ORDER_BY + order_column + self.__order
         return query
+
+    def compose_update(self, db_name, table_name, columns) -> str:
+        sql = self.__SQL_UPDATE.format(db_name + self.__SQL_DOT + table_name)
+        for (i, v) in zip(range(len(columns)), columns):
+            sql += v + self.__SQL_ASSIGN
+            sql += self.__SQL_OPEN_BRACKET + self.__SQL_VALUE + str(i + 1) + self.__SQL_CLOSE_BRACKET
+            sql += self.__SQL_COLUMN_SEP
+        query = self.__remove_trailing_sep(sql)
+        query += self.__SQL_WHERE
+        return query
+
+    def compose_delete(self, db_name, table_name) -> str:
+        sql = self.__SQL_DELETE.format(db_name + self.__SQL_DOT + table_name)
+        sql += self.__SQL_WHERE
+        return sql
+
+    def compose_insert(self, db_name, table_name, columns) ->str:
+        sql = self.__SQL_INSERT.format(db_name + self.__SQL_DOT + table_name)
+        values = ''
+        for (i, v) in zip(range(len(columns)), columns):
+            sql += v + self.__SQL_COLUMN_SEP
+            values += self.__SQL_OPEN_BRACKET + self.__SQL_VALUE + str(i + 1) + self.__SQL_CLOSE_BRACKET
+            values += self.__SQL_COLUMN_SEP
+        query = self.__remove_trailing_sep(sql) + self.__SQL_INSERT_VALUES
+        values = self.__remove_trailing_sep(values)
+        query += values + self.__SQL_INSERT_END
+        return query
+
+    def __remove_trailing_sep(self, s) -> str:
+        if len(s) <= len(self.__SQL_COLUMN_SEP):
+            return ''
+        return s[0:len(s) - len(self.__SQL_COLUMN_SEP)]
