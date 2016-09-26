@@ -39,6 +39,10 @@ class DialogSqlQuery(QDialog):
     def __execute_query(self):
         self.__sql_input.setPlainText(str(self.__db_access.query(self.__sql_input.toPlainText())))
 
+    @pyqtSlot()
+    def __clear_query_input(self):
+        self.__sql_input.clear()
+
     def __init__(self, db_access, table_name, db_name, columns):
         super().__init__()
         self.__init_consts()
@@ -53,6 +57,7 @@ class DialogSqlQuery(QDialog):
         self.__LBL_SQL_TEMPLATES = QLabel('Templates: ')
         self.__TITLE = 'SQL Query'
         self.__GO = 'Go'
+        self.__CLEAR = 'Clear'
         self.__CANCEL = 'Cancel'
         self.__SELECT = 'Select'
         self.__UPDATE = 'Update'
@@ -84,12 +89,14 @@ class DialogSqlQuery(QDialog):
         return hbox_layout
 
     def __init_sql_query_layout(self) -> QHBoxLayout:
+        self.__clear_button = QPushButton(self.__CLEAR)
         self.__go_button = QPushButton(self.__GO)
         self.__cancel_button = QPushButton(self.__CANCEL)
         hbox_layout = QHBoxLayout()
         hbox_layout.addWidget(self.__LBL_SQL_QUERY)
         hbox_layout.addWidget(self.__go_button)
         hbox_layout.addWidget(self.__cancel_button)
+        hbox_layout.addWidget(self.__clear_button)
         return hbox_layout
 
     def __init_layout(self) -> QVBoxLayout:
@@ -107,3 +114,4 @@ class DialogSqlQuery(QDialog):
         self.__cancel_button.clicked.connect(self.close)
         self.__select_button.clicked.connect(self.__populate_select_template)
         self.__go_button.clicked.connect(self.__execute_query)
+        self.__clear_button.clicked.connect(self.__clear_query_input)
