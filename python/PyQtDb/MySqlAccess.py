@@ -52,9 +52,7 @@ class MySqlAccess:
         cursor = self._conn.cursor()
         query = sql_stmt
         cursor.execute(query)
-        l = []
-        for row in cursor:
-            l.append(row)
+        l = [row for row in cursor]
         cursor.close()
         return l
 

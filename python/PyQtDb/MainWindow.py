@@ -130,10 +130,7 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(self.__STATUS_READY)
 
     def __get_columns_of_table(self, table_name, db_name) -> [list]:
-        l = []
-        for v in self.__dbAccess.get_columns_of_table(db_name, table_name):
-            l.append(v[0])
-        return l
+        return [v[0] for v in self.__dbAccess.get_columns_of_table(db_name, table_name)]
 
     def __set_up_table_head(self, lst):
         if not isinstance(lst, list) or not lst:
