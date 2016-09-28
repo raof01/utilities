@@ -112,12 +112,12 @@ class DialogSqlQuery(QDialog):
     def __init_layout(self) -> QVBoxLayout:
         self.__sql_input = QPlainTextEdit()
         self.__sql_input.setFixedHeight(self.__SQL_INPUT_HEIGHT)
-        self.__output_layout = QVBoxLayout()
+        self.__output = QPlainTextEdit()
         vbox = QVBoxLayout()
         vbox.addLayout(self.__init_sql_query_layout())
         vbox.addWidget(self.__sql_input)
         vbox.addLayout(self.__init_sql_template_button_layout())
-        vbox.addLayout(self.__output_layout)
+        vbox.addWidget(self.__output)
         return vbox
 
     def __setup_event_handlers(self):

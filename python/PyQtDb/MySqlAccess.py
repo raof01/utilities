@@ -61,8 +61,11 @@ class MySqlAccess:
     def query(self, sql_stmt=None) -> [list]:
         cursor = self._conn.cursor()
         query = sql_stmt
-        cursor.execute(query)
-        l = [row for row in cursor]
+        try:
+            cursor.execute(query)
+            l = [row for row in cursor]
+        except errors.ProgrammingError:
+            return None
         cursor.close()
         return l
 
