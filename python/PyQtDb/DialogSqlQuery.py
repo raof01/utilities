@@ -61,6 +61,15 @@ class DialogSqlQuery(QDialog):
         self.__table_name = self.none_to_space(table_name)
         self.__db_name = self.none_to_space(db_name)
         self.__columns = self.none_to_space(columns)
+        self.__setup_output_creation()
+
+    def __setup_output_creation(self):
+        self.__action_dict = None
+
+    def __create_output_widget(self):
+        if self.__select_executed:
+            self.__output = QTableView()
+        pass
 
     def __init_consts(self):
         self.__LBL_SQL_QUERY= QLabel('SQL: ')
