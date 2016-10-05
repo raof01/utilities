@@ -3,7 +3,8 @@
 import sys
 from PyQt5.QtWidgets import (QDialog, QPushButton, QPlainTextEdit, QTableView,
                              QHBoxLayout, QVBoxLayout, QLabel)
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtCore import pyqtSlot, Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
 import utilities
 import platform
 
@@ -33,7 +34,19 @@ class DialogSqlQuery(QDialog):
 
     @pyqtSlot()
     def __execute_query(self):
-        self.__sql_input.setPlainText(str(self.__db_access.query(self.__sql_input.toPlainText())))
+        sql = self.__sql_input.toPlainText()
+        if sql == '':
+            return
+        self.__action_dict[[p for p in sql.split(' ') if p != ''][0]]()
+        self.__output.model().setColumnCount(len(self.__columns))
+        for (i, v) in zip(range(len(self.__columns)), self.__columns):
+            self.__output.model().setHeaderData(i, Qt.Horizontal, v)
+        lst = self.__db_access.query(sql)
+        for values in lst:
+            items = []
+            for v in values:
+                items.append(QStandardItem(str(v)))
+            self.__output.model().appendRow(items)
 
     @pyqtSlot()
     def __clear_query_input(self):
@@ -63,13 +76,20 @@ class DialogSqlQuery(QDialog):
         self.__columns = self.none_to_space(columns)
         self.__setup_output_creation()
 
-    def __setup_output_creation(self):
-        self.__action_dict = None
+    def __setup_output_creation(self) -> {dict}:
+        return {
+            self.__SELECT: self.__create_treeview_output,
+            self.__UPDATE: self.__create_plaintext_output,
+            self.__DELETE: self.__create_plaintext_output,
+            self.__INSERT: self.__create_plaintext_output
+        }
 
-    def __create_output_widget(self):
-        if self.__select_executed:
-            self.__output = QTableView()
-        pass
+    def __create_treeview_output(self):
+        self.__output = QTableView()
+        self.__output.setModel(QStandardItemModel())
+
+    def __create_plaintext_output(self):
+        self.__output = QPlainTextEdit()
 
     def __init_consts(self):
         self.__LBL_SQL_QUERY= QLabel('SQL: ')
@@ -78,10 +98,10 @@ class DialogSqlQuery(QDialog):
         self.__GO = 'Go'
         self.__CLEAR = 'Clear'
         self.__CANCEL = 'Cancel'
-        self.__SELECT = 'Select'
-        self.__UPDATE = 'Update'
-        self.__DELETE = 'Delete'
-        self.__INSERT = 'Insert'
+        self.__SELECT = 'SELECT'
+        self.__UPDATE = 'UPDATE'
+        self.__DELETE = 'DELETE'
+        self.__INSERT = 'INSERT'
         self.__WIDTH = 800
         self.__HEIGHT = 600
         self.__SQL_INPUT_HEIGHT = 100
@@ -93,6 +113,7 @@ class DialogSqlQuery(QDialog):
         self.setFixedWidth(self.__WIDTH)
         self.setFixedHeight(self.__HEIGHT)
         self.setModal(True)
+        self.__action_dict = self.__setup_output_creation()
 
     def __init_sql_template_button_layout(self) -> QHBoxLayout:
         self.__select_button = QPushButton(self.__SELECT)
