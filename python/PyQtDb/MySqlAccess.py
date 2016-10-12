@@ -15,9 +15,13 @@ class MySqlAccess:
 
     def __init__(self, db_host=default_host, db_port=default_port):
         self.__init_consts()
+        self.__invalid_db = False
         self.__order = self.__SQL_ORDER_DESC
-        self._conn = MySQLConnection(host=db_host,
-                                     port=db_port)
+        try:
+            self._conn = MySQLConnection(host=db_host,
+                                         port=db_port)
+        except errors.InterfaceError:
+            self.__invalid_db = True
 
     def __init_consts(self):
         # SQL
@@ -47,7 +51,7 @@ class MySqlAccess:
         self.SQL_TEMPLATE_SELECT = 'SELECT {0} FROM {1} WHERE 1'
 
     def connect(self, user_name=None, user_password=None) -> bool:
-        if (user_name is None) or (user_password is None):
+        if (user_name is None) or (user_password is None) or self.__invalid_db:
             return False
         try:
             self._conn.connect(user=user_name, password=user_password)
