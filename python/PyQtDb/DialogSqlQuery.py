@@ -37,16 +37,16 @@ class DialogSqlQuery(QDialog):
         sql = self.__sql_input.toPlainText()
         if sql == '':
             return
-        self.__action_dict[[p for p in sql.split(' ') if p != ''][0]]()
-        self.__output.model().setColumnCount(len(self.__columns))
-        for (i, v) in zip(range(len(self.__columns)), self.__columns):
-            self.__output.model().setHeaderData(i, Qt.Horizontal, v)
+        #self.__action_dict[[p for p in sql.split(' ') if p != ''][0]]()
+        #self.__output.model().setColumnCount(len(self.__columns))
+        #for (i, v) in zip(range(len(self.__columns)), self.__columns):
+        #    self.__output.model().setHeaderData(i, Qt.Horizontal, v)
         lst = self.__db_access.query(sql)
-        for values in lst:
-            items = []
-            for v in values:
-                items.append(QStandardItem(str(v)))
-            self.__output.model().appendRow(items)
+        #for values in lst:
+        #    items = []
+        #    for v in values:
+        #        items.append(QStandardItem(str(v)))
+        #    self.__output.model().appendRow(items)
 
     @pyqtSlot()
     def __clear_query_input(self):
