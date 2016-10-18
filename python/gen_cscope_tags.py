@@ -38,7 +38,7 @@ class CmdLineParser:
 
 fileNamePatterns = ['*.[cCsShH]', '*.sh', '*.csh', '*.prg', '*.in',
                     '*.cpp', '*.java', '*.cxx', '*.cc', '*.hxx',
-                    '*.hpp', '*.inl', '*.config', '*.ti']
+                    '*.hpp', '*.inl', '*.config', '*.ti', '*.cs']
 
 def rmOldCscopeFiles(srcDir):
     os.chdir(srcDir)
@@ -173,7 +173,7 @@ if not cmdParser.cleanOnly:
         rptmr.printMessage(' Generating cscope files ...')
         ret = genCscopeFiles(srcDir)
         rptmr.stop(ret)
-        # removeTmpFile(tmpFile)
+        removeTmpFile(tmpFile)
 
     if not noTags:
         # Generate TAGS
