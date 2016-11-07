@@ -3,6 +3,8 @@
 #include <thread>
 #include <chrono>
 
+using CppToolBox::MyTime;
+
 TEST(MyTime, GetMilliSecondsPassed)
 {
     MyTime myTimeNow = MyTime();

@@ -9,7 +9,7 @@ aux_source_directory(./tests SRC_LIST)
 INCLUDE_DIRECTORIES(inc)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set(ENV{GTEST_ROOT} "C:/Program Files (x86)/gtest/")
+    set(ENV{GTEST_ROOT} "C:/Program Files (x86)/googletest-distribution/")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
     FIND_PACKAGE(GTest REQUIRED)

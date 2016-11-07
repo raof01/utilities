@@ -2,6 +2,7 @@
 
 using std::chrono::duration;
 
+using CppToolBox::MyTime;
 
 MyTime::MyTime() : mStart()
 {

@@ -17,6 +17,8 @@ const string CLOSE_BRACKET = "]";
 const string EQUAL_SIGN = "=";
 const string COMMENT_SIGN = "#";
 
+using CppToolBox::IniParser;
+
 IniParser::IniParser(const string &fName)
     : mIniFileName(fName)
     , mKeyValues()

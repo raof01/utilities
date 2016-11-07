@@ -22,6 +22,9 @@ using std::istringstream;
  * If there's only one section in ini file, then [section] can be omitted
  */
 
+namespace CppToolBox
+{
+
 const string DEFAULT_SECTION = "Default";
 
 class IniParser
@@ -106,5 +109,7 @@ private:
     string mIniFileName;
     IniTreeType mKeyValues;
 };
+
+}
 
 #endif

@@ -1,6 +1,9 @@
 #include "gtest/gtest.h"
 #include "IniParser.h"
 
+using CppToolBox::IniParser;
+using CppToolBox::DEFAULT_SECTION;
+
 TEST(IniParser, Parse_ReturnFalseWhenIniFileDoesNotExist)
 {
     IniParser iniParser("NOSUCHFILE");

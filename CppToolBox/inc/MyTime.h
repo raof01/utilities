@@ -5,6 +5,9 @@
 
 using std::chrono::high_resolution_clock;
 
+namespace CppToolBox
+{
+
 class MyTime
 {
 public:
@@ -14,5 +17,6 @@ public:
 private:
     high_resolution_clock::time_point mStart;
 };
+}
 
 #endif
