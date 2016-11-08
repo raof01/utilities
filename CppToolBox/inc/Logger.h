@@ -3,7 +3,7 @@
 
 #include <string>
 #include <ostream>
-#include "Time.h"
+#include "MyTime.h"
 
 using std::string;
 using std::pair;
@@ -11,6 +11,19 @@ using std::ostream;
 
 namespace CppToolBox
 {
+
+const int PRECISION = 16;
+const int FUNCTION_NAME_WIDTH = 20;
+const int KEY_WIDTH = 10;
+const int VALUE_WIDTH = 18;
+const int TIMESTAMP_WIDTH = 20;
+const int STATE_WIDTH = 5;
+
+const string MILLI_SECOND = "(ms)";
+const string COLON = ": ";
+const string EQ = " = ";
+const string BEGIN = "Begin";
+const string END = "End";
 
 class Logger
 {
@@ -61,7 +74,7 @@ private:
     static ostream& AddMsgToOstream(ostream&, const string&);
 
 private:
-    static Time mTime;
+    static MyTime mTime;
 };
 }
 #include "Logger.incl"

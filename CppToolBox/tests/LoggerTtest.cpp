@@ -1,100 +1,39 @@
-#include <iostream>
-#include <iomanip>
-#include "Constants.h"
 
-using namespace std;
-using CppToolBox::Logger;
+#include <utility>
+#include "gtest/gtest.h"
+#include "Logger.h"
 
-template <typename T>
-ostream& AddKeyValueToOstream(ostream& os, const string& k, T v)
+using namespace CppToolBox;
+
+TEST(TestLogger, Printing)
 {
-    os << setw(KEY_WIDTH) << right << k << EQ << setw(VALUE_WIDTH) << left << v;
-    return os;
+    Logger::Setup();
+    Logger::AddBegin(__FUNCTION__);
+    Logger::AddEnd(__FUNCTION__);
+    Logger::AddMsg("this is a free message");
+    Logger::AddBegin1Pair(__FUNCTION__, std::make_pair<string, double>("Key", 0.03));
+    Logger::AddEnd1Pair(__FUNCTION__, std::make_pair<string, double>("Key", 0.03));
+    Logger::AddMsg1Pair("this is a free message", std::make_pair<string, double>("Key", 0.03));
+    Logger::AddBegin2Pairs(__FUNCTION__,
+                           std::make_pair<string, double>("KeyBegin1", 0.02),
+                           std::make_pair<string, double>("KeyBegin2", 0.02));
+    Logger::AddEnd2Pairs(__FUNCTION__,
+                         std::make_pair<string, double>("KeyEnd1", 0.02),
+                         std::make_pair<string, double>("KeyEnd2", 0.02));
+    Logger::AddMsg2Pairs(__FUNCTION__,
+                         std::make_pair<string, double>("KeyMsg1", 0.02),
+                         std::make_pair<string, double>("KeyMsg2", 0.02));
+    Logger::AddBegin3Pairs(__FUNCTION__,
+                           std::make_pair<string, double>("KeyBegin1", 0.02),
+                           std::make_pair<string, string>("KeyBegin2", "Value1"),
+                           std::make_pair<string, string>("KeyBegin3", "Value2"));
+    Logger::AddEnd3Pairs(__FUNCTION__,
+                         std::make_pair<string, double>("KeyEnd1", 0.02),
+                         std::make_pair<string, double>("KeyEnd2", 0.02),
+                         std::make_pair<string, string>("KeyEnd3", "Value1"));
+    Logger::AddMsg3Pairs(__FUNCTION__,
+                         std::make_pair<string, double>("KeyMsg1", 0.02),
+                         std::make_pair<string, double>("KeyMsg2", 0.02),
+                         std::make_pair<string, string>("KeyMsg3", "Value1"));
 }
 
-template <typename T>
-void Logger::AddBegin1Pair(const string &funcName, const pair<string, T> &p)
-{
-    AddKeyValueToOstream(AddTagToOstream(cerr, funcName, BEGIN) << COLON,
-                         p.first, p.second) << endl;
-}
-
-template <typename T>
-void Logger::AddEnd1Pair(const string &funcName, const pair<string, T> &p)
-{
-    AddKeyValueToOstream(AddTagToOstream(cerr, funcName, END) << COLON,
-                         p.first, p.second) << endl;
-}
-
-template <typename T>
-void Logger::AddMsg1Pair(const string &msg, const pair<string, T> &p)
-{
-    AddKeyValueToOstream(AddMsgToOstream(cerr, msg) << COLON,
-                         p.first, p.second) << endl;
-}
-
-template <typename T1, typename T2>
-void Logger::AddBegin2Pairs(const string& funcName,
-                           const pair<string, T1>& p1,
-                           const pair<string, T2>& p2)
-{
-    AddKeyValueToOstream(AddKeyValueToOstream(AddTagToOstream(cerr, funcName, BEGIN) << COLON,
-                         p1.first, p1.second) << COLON, p2.first, p2.second) << endl;
-}
-
-template <typename T1, typename T2>
-void Logger::AddEnd2Pairs(const string& funcName,
-                         const pair<string, T1>& p1,
-                         const pair<string, T2>& p2)
-{
-    AddKeyValueToOstream(AddKeyValueToOstream(AddTagToOstream(cerr, funcName, END) << COLON,
-                         p1.first, p1.second) << COLON, p2.first, p2.second) << endl;
-}
-
-template <typename T1, typename T2>
-void Logger::AddMsg2Pairs(const string& msg,
-                         const pair<string, T1>& p1,
-                         const pair<string, T2>& p2)
-{
-    AddKeyValueToOstream(AddKeyValueToOstream(AddMsgToOstream(cerr, msg) << COLON,
-                         p1.first, p1.second) << COLON, p2.first, p2.second) << endl;
-}
-
-template <typename T1, typename T2, typename T3>
-void Logger::AddBegin3Pairs(const string& funcName,
-                            const pair<string, T1>& p1,
-                            const pair<string, T2>& p2,
-                            const pair<string, T3>& p3)
-{
-    AddKeyValueToOstream(
-                AddKeyValueToOstream(
-                    AddKeyValueToOstream(AddTagToOstream(cerr, funcName, BEGIN) << COLON,
-                                         p1.first, p1.second) << COLON, p2.first, p2.second) << COLON,
-                p3.first, p3.second) << endl;
-}
-
-template <typename T1, typename T2, typename T3>
-void Logger::AddEnd3Pairs(const string& funcName,
-                          const pair<string, T1>& p1,
-                          const pair<string, T2>& p2,
-                          const pair<string, T3>& p3)
-{
-    AddKeyValueToOstream(
-                AddKeyValueToOstream(
-                    AddKeyValueToOstream(AddTagToOstream(cerr, funcName, END) << COLON,
-                                         p1.first, p1.second) << COLON, p2.first, p2.second) << COLON,
-                p3.first, p3.second) << endl;
-}
-
-template <typename T1, typename T2, typename T3>
-void Logger::AddMsg3Pairs(const string& msg,
-                          const pair<string, T1>& p1,
-                          const pair<string, T2>& p2,
-                          const pair<string, T3>& p3)
-{
-    AddKeyValueToOstream(
-                AddKeyValueToOstream(
-                    AddKeyValueToOstream(AddMsgToOstream(cerr, msg) << COLON,
-                                         p1.first, p1.second) << COLON, p2.first, p2.second) << COLON,
-                p3.first, p3.second) << endl;
-}
