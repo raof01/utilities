@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Injectable, Component } from '@angular/core';
+import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
 
 @Component({
     selector: 'db-login',
@@ -10,6 +11,7 @@ import { Component } from '@angular/core';
  * NOTE:
  * TODO: db-access logic should be in server side, instead of client side
  */
+@Injectable()
 export class DbLoginComponent {
     title: string = 'Login';
     msg: string;
@@ -18,7 +20,34 @@ export class DbLoginComponent {
     userName: string;
     password: string;
 
+    constructor(private http: Http) {
+        this.http = http;
+    }
+
     onClick(event) {
-        this.msg = `${this.serverIp}:${this.serverPort}, ${this.userName}, ${this.password}`;
+        let url: string = 'http://localhost:3000/dbs';
+        let body: string = `{
+            host: ${this.serverIp},
+            port: ${parseInt(this.serverPort)},
+            user: ${this.userName},
+            password: ${this.password}
+        }`;
+        let query: string =
+            `host=${this.serverIp}&port=${parseInt(this.serverPort)}&user=${this.userName}&password=${this.password}`;
+        this.http.get(`${url}?${query}`, new RequestOptions({
+            headers: new Headers({
+                'Content-Type': 'application/json',
+            })
+        })).subscribe((value: Response) => {
+            console.log(value.json());
+            this.msg = '\n' + value.json();
+        });
+        /*this.http.post(url, body, new RequestOptions({
+            headers: new Headers({
+                'Content-Type': 'application/json',
+            })
+        })).subscribe((value: Response) => {
+            console.log(value);
+        });*/
     }
 }
