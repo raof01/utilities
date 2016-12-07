@@ -1,19 +1,24 @@
 var express = require('express');
 var router = express.Router();
-var Query = require('../public/lib/mysql-query');
+var getDbs = require('../public/lib/get-dbs');
 
 /* GET dbs listing. */
-router.get('/', function(req, res, next) {
-  let q = new Query('localhost', 8889, "test", "test123");
-  q.query('SHOW DATABASES', function(err, rows, fields) {
-    let arr = new Array();
-    rows.forEach(function(element) {
-        arr.push(element['Database']);
+/*
+ * curl -i -H 'content-type: application/json' -X POST -d '{"host": "localhost", "port": 8889, "user": "test", "password": "test123"}' http://localhost:3000/dbs
+ */
+
+router.post('/', function(req, res, next) {
+    console.log(req.body);
+    getDbs.postDatabases(req, function(result) {
+        res.send(result)
     });
-  res.send(`${arr}`);
 });
 
-q.disconnect();
+router.get('/', function(req, res, next) {
+    console.log(req.query);
+    getDbs.getDatabases(req, function(result) {
+        res.send(result);
+    });
 });
 
 module.exports = router;
