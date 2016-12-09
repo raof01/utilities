@@ -1,10 +1,10 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
-import { HubService } from '../hub.service';
+import { Proxy } from '../proxy.service';
 @Injectable()
 export class DbService {
 
-    constructor(private http: Http, private hubService: HubService) {
+    constructor(private http: Http, private proxyService: Proxy) {
     }
 
     public getDbs(url: string, ip: string, port: number, user: string, password: string) : void {
@@ -21,7 +21,7 @@ export class DbService {
                 'Content-Type': 'application/json',
             })
         })).subscribe((value: Response) => {
-            this.hubService.notifyDbs(value.json());
+            this.proxyService.notifyDbs(value.json());
         });
     }
 
@@ -33,7 +33,7 @@ export class DbService {
                 'Content-Type': 'application/json',
             })
         })).subscribe((value: Response) => {
-            this.hubService.notifyTables(value.json());
+            this.proxyService.notifyTables(value.json());
         });
     }
 }

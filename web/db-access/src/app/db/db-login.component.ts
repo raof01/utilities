@@ -1,7 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
 import { DbService } from './db.service';
-import { HubService } from '../hub.service';
+import { Proxy } from '../proxy.service';
 import { DbsComponent } from './dbs.component';
 
 @Component({
@@ -26,10 +26,10 @@ export class DbLoginComponent {
 
     constructor(
         private dbService: DbService,
-        private hubService: HubService
+        private proxyService: Proxy
     ) {
         this.url = 'http://localhost:3000/';
-        this.hubService.subscribeDbSelected(this.onDbSelected.bind(this));
+        this.proxyService.subscribeDbSelected(this.onDbSelected.bind(this));
     }
 
     private onDbSelected(v: string) {

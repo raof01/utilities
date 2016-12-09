@@ -1,6 +1,6 @@
 import { Injectable, Component, Input, EventEmitter } from '@angular/core';
 import { DbService } from './db.service';
-import { HubService } from '../hub.service';
+import { Proxy } from '../proxy.service';
 
 @Component({
     selector: 'dbs',
@@ -18,17 +18,17 @@ export class DbsComponent {
     dbs: string[] = undefined;
     tables: string[] = undefined;
 
-    constructor(private dbService: DbService, private hubService: HubService) {
-        this.hubService.subscribeDbs((v: string[]) => {
+    constructor(private dbService: DbService, private proxyService: Proxy) {
+        this.proxyService.subscribeDbs((v: string[]) => {
             this.dbs = v;
         });
-        this.hubService.subscribeTables((v: string[]) => {
+        this.proxyService.subscribeTables((v: string[]) => {
             this.tables = v;
         });
     }
 
     private onChange(event, str) {
         console.log(str);
-        this.hubService.notifyDbSelected(str);
+        this.proxyService.notifyDbSelected(str);
     }
 }
