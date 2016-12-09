@@ -4,19 +4,22 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { DbLoginComponent } from './db-login.component';
+import { DbLoginComponent } from './db/db-login.component';
+import { DbsComponent } from './db/dbs.component';
+import { DbService } from './db/db.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DbLoginComponent
+    DbLoginComponent,
+    DbsComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule
   ],
-  providers: [],
+  providers: [DbService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
