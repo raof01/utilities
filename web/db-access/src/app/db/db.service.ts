@@ -1,20 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
-
+import { HubService } from '../hub.service';
 @Injectable()
 export class DbService {
-    private dbsSubject: Subject<string[]>;
-    constructor(private http: Http) {
-        this.dbsSubject = new Subject();
+
+    constructor(private http: Http, private hubService: HubService) {
     }
 
-    public subscribeDbs(fn) {
-        this.dbsSubject.subscribe(fn);
-    }
-
-    public getDbs(ip: string, port: number, user: string, password: string) : void {
-        let url: string = 'http://localhost:3000/dbs';
+    public getDbs(url: string, ip: string, port: number, user: string, password: string) : void {
         /*let body: string = `{
             host: ${ip},
             port: ${port},
@@ -23,12 +16,24 @@ export class DbService {
         }`;*/
         let query: string =
             `host=${ip}&port=${port}&user=${user}&password=${password}`;
-        this.http.get(`${url}?${query}`, new RequestOptions({
+        this.http.get(`${url}dbs?${query}`, new RequestOptions({
             headers: new Headers({
                 'Content-Type': 'application/json',
             })
         })).subscribe((value: Response) => {
-            this.dbsSubject.next(value.json());
+            this.hubService.notifyDbs(value.json());
+        });
+    }
+
+    public getTables(url: string, ip: string, port: number, user: string, password: string, dbName: string) {
+        let query: string =
+            `host=${ip}&port=${port}&user=${user}&password=${password}&dbName=${dbName}`;
+        this.http.get(`${url}tables?${query}`, new RequestOptions({
+            headers: new Headers({
+                'Content-Type': 'application/json',
+            })
+        })).subscribe((value: Response) => {
+            this.hubService.notifyTables(value.json());
         });
     }
 }

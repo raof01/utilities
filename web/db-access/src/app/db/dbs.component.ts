@@ -1,5 +1,6 @@
-import { Injectable, Component, Input } from '@angular/core';
+import { Injectable, Component, Input, EventEmitter } from '@angular/core';
 import { DbService } from './db.service';
+import { HubService } from '../hub.service';
 
 @Component({
     selector: 'dbs',
@@ -17,9 +18,17 @@ export class DbsComponent {
     dbs: string[] = undefined;
     tables: string[] = undefined;
 
-    constructor(private dbService: DbService) {
-        this.dbService.subscribeDbs((v) => {
+    constructor(private dbService: DbService, private hubService: HubService) {
+        this.hubService.subscribeDbs((v: string[]) => {
             this.dbs = v;
         });
+        this.hubService.subscribeTables((v: string[]) => {
+            this.tables = v;
+        });
+    }
+
+    private onChange(event, str) {
+        console.log(str);
+        this.hubService.notifyDbSelected(str);
     }
 }

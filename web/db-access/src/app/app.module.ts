@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { DbLoginComponent } from './db/db-login.component';
 import { DbsComponent } from './db/dbs.component';
 import { DbService } from './db/db.service';
+import { HubService } from './hub.service';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,7 @@ import { DbService } from './db/db.service';
     FormsModule,
     HttpModule
   ],
-  providers: [DbService],
+  providers: [DbService, HubService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

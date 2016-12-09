@@ -1,6 +1,9 @@
 import { Injectable, Component } from '@angular/core';
 import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
 import { DbService } from './db.service';
+import { HubService } from '../hub.service';
+import { DbsComponent } from './dbs.component';
+
 @Component({
     selector: 'db-login',
     templateUrl: './db-login.component.html',
@@ -19,11 +22,22 @@ export class DbLoginComponent {
     serverPort: string;
     userName: string;
     password: string;
+    private url: string = undefined;
 
-    constructor(private dbService: DbService) {
+    constructor(
+        private dbService: DbService,
+        private hubService: HubService
+    ) {
+        this.url = 'http://localhost:3000/';
+        this.hubService.subscribeDbSelected(this.onDbSelected.bind(this));
+    }
+
+    private onDbSelected(v: string) {
+        console.log(v);
+        this.dbService.getTables(this.url, this.serverIp, parseInt(this.serverPort), this.userName, this.password, v);
     }
 
     public onClick(event) {
-        this.dbService.getDbs(this.serverIp, parseInt(this.serverPort), this.userName, this.password);
+        this.dbService.getDbs(this.url, this.serverIp, parseInt(this.serverPort), this.userName, this.password);
     }
 }
