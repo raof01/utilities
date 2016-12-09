@@ -20,13 +20,10 @@ export class DbLoginComponent {
     userName: string;
     password: string;
 
-    constructor(
-        private http: Http,
-        private dbService: DbService
-    ) {
+    constructor(private dbService: DbService) {
     }
 
-    onClick(event) {
+    public onClick(event) {
         this.dbService.getDbs(this.serverIp, parseInt(this.serverPort), this.userName, this.password);
     }
 }

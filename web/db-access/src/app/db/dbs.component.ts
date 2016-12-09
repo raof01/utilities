@@ -1,4 +1,5 @@
 import { Injectable, Component, Input } from '@angular/core';
+import { DbService } from './db.service';
 
 @Component({
     selector: 'dbs',
@@ -15,4 +16,10 @@ export class DbsComponent {
     @Input()
     dbs: string[] = undefined;
     tables: string[] = undefined;
+
+    constructor(private dbService: DbService) {
+        this.dbService.subscribeDbs((v) => {
+            this.dbs = v;
+        });
+    }
 }

@@ -12,7 +12,7 @@ export class DbService {
     public subscribeDbs(fn) {
         this.dbsSubject.subscribe(fn);
     }
-    
+
     public getDbs(ip: string, port: number, user: string, password: string) : void {
         let url: string = 'http://localhost:3000/dbs';
         /*let body: string = `{
@@ -28,7 +28,7 @@ export class DbService {
                 'Content-Type': 'application/json',
             })
         })).subscribe((value: Response) => {
-            console.log(value.json());
+            this.dbsSubject.next(value.json());
         });
     }
 }

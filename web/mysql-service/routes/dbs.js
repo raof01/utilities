@@ -15,7 +15,6 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
-    console.log(req.query);
     getDbs.getDatabases(req, function(result) {
         res.send(result);
     });
