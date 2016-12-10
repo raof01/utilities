@@ -3,6 +3,7 @@ import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from 
 import { DbService } from './db.service';
 import { Proxy } from '../proxy.service';
 import { DbsComponent } from './dbs.component';
+import { DbConnModel } from './db-conn.model';
 
 @Component({
     selector: 'db-login',
@@ -18,34 +19,37 @@ import { DbsComponent } from './dbs.component';
 export class DbLoginComponent {
     title: string = 'Login';
     msg: string;
-    serverIp: string;
-    serverPort: string;
-    userName: string;
-    password: string;
+    private dbConnModel: DbConnModel = {url: 'http://localhost:3000/', ip: '', port: '', user: '', password: ''};
     private url: string = undefined;
     private selectedDb: string = undefined;
     private selectedTable: string = undefined;
+    private fields: string[] = undefined;
 
     constructor(
         private dbService: DbService,
         private proxyService: Proxy
     ) {
-        this.url = 'http://localhost:3000/';
         this.proxyService.subscribeDbSelected(this.onDbSelected.bind(this));
         this.proxyService.subscribeTableSelected(this.onTableSelected.bind(this));
+        this.proxyService.subscribeColumns(this.onColumnsGot.bind(this));
+    }
+
+    private onColumnsGot(v: string[]) {
+        this.fields = v;
+        this.dbService.getValues(this.dbConnModel, this.selectedDb, this.selectedTable, this.fields);
     }
 
     private onDbSelected(v: string) {
         this.selectedDb = v;
-        this.dbService.getTables(this.url, this.serverIp, parseInt(this.serverPort), this.userName, this.password, v);
+        this.dbService.getTables(this.dbConnModel, v);
     }
 
     private onTableSelected(v: string) {
         this.selectedTable = v;
-        this.dbService.getColumns(this.url, this.serverIp, parseInt(this.serverPort), this.userName, this.password, this.selectedDb, v);
+        this.dbService.getColumns(this.dbConnModel, this.selectedDb, v);
     }
 
     public onClick(event) {
-        this.dbService.getDbs(this.url, this.serverIp, parseInt(this.serverPort), this.userName, this.password);
+        this.dbService.getDbs(this.dbConnModel);
     }
 }

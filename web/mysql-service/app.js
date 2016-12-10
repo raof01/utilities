@@ -11,6 +11,7 @@ var users = require('./routes/users');
 var dbs = require('./routes/dbs');
 var tbls = require('./routes/tables');
 var columns = require('./routes/columns');
+var table = require('./routes/table');
 var app = express();
 
 var corsOptions = {
@@ -38,6 +39,7 @@ app.use('/users', users);
 app.use('/dbs', dbs);
 app.use('/tables', tbls);
 app.use('/columns', columns);
+app.use('/table', table);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
