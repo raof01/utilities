@@ -23,6 +23,8 @@ export class DbLoginComponent {
     userName: string;
     password: string;
     private url: string = undefined;
+    private selectedDb: string = undefined;
+    private selectedTable: string = undefined;
 
     constructor(
         private dbService: DbService,
@@ -30,11 +32,17 @@ export class DbLoginComponent {
     ) {
         this.url = 'http://localhost:3000/';
         this.proxyService.subscribeDbSelected(this.onDbSelected.bind(this));
+        this.proxyService.subscribeTableSelected(this.onTableSelected.bind(this));
     }
 
     private onDbSelected(v: string) {
-        console.log(v);
+        this.selectedDb = v;
         this.dbService.getTables(this.url, this.serverIp, parseInt(this.serverPort), this.userName, this.password, v);
+    }
+
+    private onTableSelected(v: string) {
+        this.selectedTable = v;
+        this.dbService.getColumns(this.url, this.serverIp, parseInt(this.serverPort), this.userName, this.password, this.selectedDb, v);
     }
 
     public onClick(event) {

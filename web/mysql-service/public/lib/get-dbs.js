@@ -11,6 +11,7 @@ function queryResultToArray(rows) {
 }
 
 function query(q, fn) {
+    console.log(`sql = ${SQL_SHOW_DB}`);
     q.query(SQL_SHOW_DB, function(err, rows, fields) {
         if (err) throw err;
         fn(queryResultToArray(rows));

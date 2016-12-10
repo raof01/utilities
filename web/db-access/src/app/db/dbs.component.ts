@@ -25,10 +25,16 @@ export class DbsComponent {
         this.proxyService.subscribeTables((v: string[]) => {
             this.tables = v;
         });
+        this.proxyService.subscribeColumns((v: string[]) => {
+            console.log(v);
+        })
     }
 
-    private onChange(event, str) {
-        console.log(str);
+    private onDbChange(event, str) {
         this.proxyService.notifyDbSelected(str);
+    }
+
+    private onTableChange(event, str) {
+        this.proxyService.notifyTableSelected(str);
     }
 }

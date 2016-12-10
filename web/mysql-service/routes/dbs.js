@@ -8,7 +8,6 @@ var getDbs = require('../public/lib/get-dbs');
  */
 
 router.post('/', function(req, res, next) {
-    console.log(req.body);
     getDbs.postDatabases(req, function(result) {
         res.send(result)
     });

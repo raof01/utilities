@@ -36,4 +36,16 @@ export class DbService {
             this.proxyService.notifyTables(value.json());
         });
     }
+
+    public getColumns(url: string, ip: string, port: number, user: string, password: string, dbName: string, tblName: string) {
+        let query: string =
+            `host=${ip}&port=${port}&user=${user}&password=${password}&dbName=${dbName}&tableName=${tblName}`;
+        this.http.get(`${url}columns?${query}`, new RequestOptions({
+            headers: new Headers({
+                'Content-Type': 'application/json',
+            })
+        })).subscribe((value: Response) => {
+            this.proxyService.notifyColumns(value.json());
+        });
+    }
 }

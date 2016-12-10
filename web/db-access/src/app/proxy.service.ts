@@ -6,11 +6,15 @@ export class Proxy {
     private dbsSubject: Subject<string[]>;
     private tablesSubject: Subject<string[]>;
     private dbSelectedSubject: Subject<string>;
+    private tblSelectedSubject: Subject<string>;
+    private columnsSubject: Subject<string[]>;
 
     constructor() {
         this.dbsSubject = new Subject();
         this.tablesSubject = new Subject();
         this.dbSelectedSubject = new Subject();
+        this.tblSelectedSubject = new Subject();
+        this.columnsSubject = new Subject();
     }
 
     public subscribeDbs(fn) {
@@ -35,5 +39,21 @@ export class Proxy {
 
     public notifyTables(v: string[]) {
         this.tablesSubject.next(v);
+    }
+
+    public notifyTableSelected(v: string) {
+        this.tblSelectedSubject.next(v);
+    }
+
+    public subscribeTableSelected(fn) {
+        this.tblSelectedSubject.subscribe(fn);
+    }
+
+    public subscribeColumns(fn) {
+        this.columnsSubject.subscribe(fn);
+    }
+
+    public notifyColumns(v: string[]) {
+        this.columnsSubject.next(v);
     }
 }

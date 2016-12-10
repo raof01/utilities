@@ -8,11 +8,11 @@ function queryResultToArray(dbName, rows) {
     rows.forEach(function (element) {
         arr.push(element[FIELD_NAME + dbName.toLowerCase()]);
     });
-    console.log(arr);
     return arr;
 }
 
 function query(q, dbName, fn) {
+    console.log(`sql = ${SQL_SHOW_TABLES}${dbName}`);
     q.query(SQL_SHOW_TABLES + dbName, function(err, rows, fields) {
         if (err) throw err;
         fn(queryResultToArray(dbName, rows));
