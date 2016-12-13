@@ -11,10 +11,6 @@ import { DbConnModel } from './db-conn.model';
     styleUrls: ['../app.component.css']
 })
 
-/*
- * NOTE:
- * TODO: db-access logic should be in server side, instead of client side
- */
 @Injectable()
 export class DbLoginComponent {
     title: string = 'Login';

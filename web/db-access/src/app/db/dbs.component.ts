@@ -8,10 +8,6 @@ import { Proxy } from '../proxy.service';
     styleUrls: ['../app.component.css']
 })
 
-/*
- * NOTE:
- * TODO: db-access logic should be in server side, instead of client side
- */
 @Injectable()
 export class DbsComponent {
     @Input()

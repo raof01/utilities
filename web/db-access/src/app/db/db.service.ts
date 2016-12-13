@@ -59,7 +59,6 @@ export class DbService {
                 'Content-Type': 'application/json',
             })
         })).subscribe((value: Response) => {
-            // TODO: send notification to a table component
             this.proxyService.notifyRows(value.json());
         });
     }
