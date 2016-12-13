@@ -7,14 +7,16 @@ export class Proxy {
     private tablesSubject: Subject<string[]>;
     private dbSelectedSubject: Subject<string>;
     private tblSelectedSubject: Subject<string>;
-    private columnsSubject: Subject<string[]>;
+    private fieldsSubject: Subject<string[]>;
+    private rowsSubject: Subject<any[]>;
 
     constructor() {
         this.dbsSubject = new Subject();
         this.tablesSubject = new Subject();
         this.dbSelectedSubject = new Subject();
         this.tblSelectedSubject = new Subject();
-        this.columnsSubject = new Subject();
+        this.fieldsSubject = new Subject();
+        this.rowsSubject = new Subject();
     }
 
     public subscribeDbs(fn) {
@@ -49,11 +51,19 @@ export class Proxy {
         this.tblSelectedSubject.subscribe(fn);
     }
 
-    public subscribeColumns(fn) {
-        this.columnsSubject.subscribe(fn);
+    public subscribeFields(fn) {
+        this.fieldsSubject.subscribe(fn);
     }
 
-    public notifyColumns(v: string[]) {
-        this.columnsSubject.next(v);
+    public notifyFields(v: string[]) {
+        this.fieldsSubject.next(v);
+    }
+
+    public subscribeRows(fn) {
+        this.rowsSubject.subscribe(fn);
+    }
+
+    public notifyRows(v: any[]) {
+        this.rowsSubject.next(v);
     }
 }

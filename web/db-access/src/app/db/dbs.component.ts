@@ -1,4 +1,4 @@
-import { Injectable, Component, Input, EventEmitter } from '@angular/core';
+import { Injectable, Component, Input } from '@angular/core';
 import { DbService } from './db.service';
 import { Proxy } from '../proxy.service';
 

@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
 import { Proxy } from '../proxy.service';
 import { DbConnModel } from './db-conn.model';
@@ -47,7 +47,7 @@ export class DbService {
                 'Content-Type': 'application/json',
             })
         })).subscribe((value: Response) => {
-            this.proxyService.notifyColumns(value.json());
+            this.proxyService.notifyFields(value.json());
         });
     }
 
@@ -60,10 +60,7 @@ export class DbService {
             })
         })).subscribe((value: Response) => {
             // TODO: send notification to a table component
-            let arr = value.json();
-            for (let v in arr) {
-                console.log(arr[v]);
-            }
+            this.proxyService.notifyRows(value.json());
         });
     }
 }

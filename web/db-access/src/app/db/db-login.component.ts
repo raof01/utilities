@@ -18,7 +18,6 @@ import { DbConnModel } from './db-conn.model';
 @Injectable()
 export class DbLoginComponent {
     title: string = 'Login';
-    msg: string;
     private dbConnModel: DbConnModel = {url: 'http://localhost:3000/', ip: '', port: '', user: '', password: ''};
     private url: string = undefined;
     private selectedDb: string = undefined;
@@ -31,7 +30,7 @@ export class DbLoginComponent {
     ) {
         this.proxyService.subscribeDbSelected(this.onDbSelected.bind(this));
         this.proxyService.subscribeTableSelected(this.onTableSelected.bind(this));
-        this.proxyService.subscribeColumns(this.onColumnsGot.bind(this));
+        this.proxyService.subscribeFields(this.onColumnsGot.bind(this));
     }
 
     private onColumnsGot(v: string[]) {
