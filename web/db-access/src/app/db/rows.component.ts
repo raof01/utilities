@@ -1,10 +1,10 @@
 import { Injectable, Component, Input } from '@angular/core';
-import { Proxy } from './proxy.service';
+import { Proxy } from '../proxy.service';
 
 @Component({
     selector: 'rows',
-    templateUrl: './rows.component.html',
-    styleUrls: ['./app.component.css']
+    templateUrl: '../html/rows.component.html',
+    styleUrls: ['../styles/app.component.css']
 })
 
 @Injectable()

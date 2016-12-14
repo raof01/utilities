@@ -7,8 +7,8 @@ import { DbConnModel } from './db-conn.model';
 
 @Component({
     selector: 'db-login',
-    templateUrl: './db-login.component.html',
-    styleUrls: ['../app.component.css']
+    templateUrl: '../html/db-login.component.html',
+    styleUrls: ['../styles/app.component.css']
 })
 
 @Injectable()

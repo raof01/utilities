@@ -8,7 +8,7 @@ import { DbLoginComponent } from './db/db-login.component';
 import { DbsComponent } from './db/dbs.component';
 import { DbService } from './db/db.service';
 import { Proxy } from './proxy.service';
-import { RowsComponent } from './rows.component';
+import { RowsComponent } from './db/rows.component';
 
 @NgModule({
   declarations: [

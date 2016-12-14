@@ -4,8 +4,8 @@ import { Proxy } from '../proxy.service';
 
 @Component({
     selector: 'dbs',
-    templateUrl: './dbs.component.html',
-    styleUrls: ['../app.component.css']
+    templateUrl: '../html/dbs.component.html',
+    styleUrls: ['../styles/app.component.css']
 })
 
 @Injectable()
