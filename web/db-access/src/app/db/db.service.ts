@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
 import { Proxy } from '../proxy.service';
-import { DbConnModel } from './db-conn.model';
+import { DbConnModel } from './db.models';
 
 @Injectable()
 export class DbService {

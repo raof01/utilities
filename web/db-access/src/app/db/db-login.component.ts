@@ -3,7 +3,7 @@ import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from 
 import { DbService } from './db.service';
 import { Proxy } from '../proxy.service';
 import { DbsComponent } from './dbs.component';
-import { DbConnModel } from './db-conn.model';
+import { DbConnModel } from './db.models';
 
 @Component({
     selector: 'db-login',
