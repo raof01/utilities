@@ -10,6 +10,8 @@ import { DbService } from './db/db.service';
 import { DbProxy } from './db/db.proxy';
 import { RowsComponent } from './db/rows.component';
 import { APP_STORES } from './app.store';
+import { DbActions } from './actions/db.actions';
+import { DbRepository } from './db/db.repository';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,12 @@ import { APP_STORES } from './app.store';
     HttpModule,
     APP_STORES
   ],
-  providers: [DbService, DbProxy],
+  providers: [
+    DbService,
+    DbProxy,
+    DbActions,
+    DbRepository
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

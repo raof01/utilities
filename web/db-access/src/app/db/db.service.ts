@@ -1,14 +1,42 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@gnrx/store';
+import { Observable } from 'rxjs/Rx';
 import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
 import { DbProxy } from './db.proxy';
 import { DbConnModel } from './db.models';
+import { DbActions } from '../actions/db.actions';
+import { DbRepository } from './db.repository';
+import { DbState } from './db.models';
 
 @Injectable()
 export class DbService {
 
-    constructor(private http: Http, private proxyService: DbProxy) {
+    private state: Observable<DbState>;
+
+    constructor(
+        private http: Http,
+        private proxyService: DbProxy,
+        private dbActions: DbActions,
+        private dbRepository: DbRepository,
+        private store: Store<any>
+    ) {
+        this.state = this.store.select('dbReducer') as Observable<DbState>;
     }
 
+    public setDbConn(dbConnModel: DbConnModel) {
+        this.store.dispatch(this.dbActions.setDbConn(dbConnModel));
+    }
+
+    private getDbConn(): Observable<DbConnModel> {
+        return this.state.map((v: DbState) => {
+            return v.dbConn;
+        });
+    }
+
+    /*
+     * TODO
+     * To move to DbRepository
+     */
     public getDbs(dbConnModel: DbConnModel) : void {
         /*let body: string = `{
             host: ${ip},

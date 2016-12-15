@@ -9,7 +9,7 @@ export const DbReducer: (state: DbState, action: Action<any>) => DbState = handl
         [DbActions.GET_TABLES]: getTables,
         [DbActions.GET_FIELDS]: getFields,
         [DbActions.GET_ROWS]: getRows,
-        [DbActions.SET_CONN]: setDbConn,
+        [DbActions.SET_CONN]: setDbConn
     },
     {
         dbConn: undefined,
@@ -24,7 +24,7 @@ function getDbs(state: DbState, action: Action<string[]>): DbState {
     // TODO
     return {
         dbConn: state.dbConn,
-        dbs: state.dbs,
+        dbs: action.payload,
         tables: state.tables,
         fields: state.fields,
         rows: state.rows
@@ -67,7 +67,7 @@ function getRows(state: DbState, action: Action<any[]>): DbState {
 function setDbConn(state: DbState, action: Action<DbConnModel>): DbState {
     // TODO
     return {
-        dbConn: state.dbConn,
+        dbConn: action.payload,
         dbs: state.dbs,
         tables: state.tables,
         fields: state.fields,
