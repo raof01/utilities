@@ -1,5 +1,5 @@
 import { Injectable, Component, Input } from '@angular/core';
-import { Proxy } from '../proxy.service';
+import { DbProxy } from './db.proxy';
 
 @Component({
     selector: 'rows',
@@ -13,7 +13,7 @@ export class RowsComponent {
     rows: any = undefined;
     private fields: string[] = undefined;
 
-    constructor(private proxy: Proxy) {
+    constructor(private proxy: DbProxy) {
         this.proxy.subscribeFields(this.onFieldsReceived.bind(this));
         this.proxy.subscribeRows(this.onRowsReceived.bind(this));
     }

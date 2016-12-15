@@ -1,6 +1,6 @@
 import { Injectable, Component, Input } from '@angular/core';
 import { DbService } from './db.service';
-import { Proxy } from '../proxy.service';
+import { DbProxy } from './db.proxy';
 
 @Component({
     selector: 'dbs',
@@ -14,7 +14,7 @@ export class DbsComponent {
     dbs: string[] = undefined;
     tables: string[] = undefined;
 
-    constructor(private dbService: DbService, private proxyService: Proxy) {
+    constructor(private dbService: DbService, private proxyService: DbProxy) {
         this.proxyService.subscribeDbs((v: string[]) => {
             this.dbs = v;
         });

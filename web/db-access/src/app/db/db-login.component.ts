@@ -1,7 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
 import { DbService } from './db.service';
-import { Proxy } from '../proxy.service';
+import { DbProxy } from './db.proxy';
 import { DbsComponent } from './dbs.component';
 import { DbConnModel } from './db.models';
 
@@ -22,7 +22,7 @@ export class DbLoginComponent {
 
     constructor(
         private dbService: DbService,
-        private proxyService: Proxy
+        private proxyService: DbProxy
     ) {
         this.proxyService.subscribeDbSelected(this.onDbSelected.bind(this));
         this.proxyService.subscribeTableSelected(this.onTableSelected.bind(this));

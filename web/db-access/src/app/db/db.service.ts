@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
-import { Proxy } from '../proxy.service';
+import { DbProxy } from './db.proxy';
 import { DbConnModel } from './db.models';
 
 @Injectable()
 export class DbService {
 
-    constructor(private http: Http, private proxyService: Proxy) {
+    constructor(private http: Http, private proxyService: DbProxy) {
     }
 
     public getDbs(dbConnModel: DbConnModel) : void {

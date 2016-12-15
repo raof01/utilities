@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
 @Injectable()
-export class Proxy {
+export class DbProxy {
     private dbsSubject: Subject<string[]>;
     private tablesSubject: Subject<string[]>;
     private dbSelectedSubject: Subject<string>;
