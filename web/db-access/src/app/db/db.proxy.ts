@@ -11,12 +11,12 @@ export class DbProxy {
     private rowsSubject: Subject<any[]>;
 
     constructor() {
-        this.dbsSubject = new Subject();
-        this.tablesSubject = new Subject();
-        this.dbSelectedSubject = new Subject();
-        this.tblSelectedSubject = new Subject();
-        this.fieldsSubject = new Subject();
-        this.rowsSubject = new Subject();
+        this.dbsSubject = new Subject<string[]>();
+        this.tablesSubject = new Subject<string[]>();
+        this.dbSelectedSubject = new Subject<string>();
+        this.tblSelectedSubject = new Subject<string>();
+        this.fieldsSubject = new Subject<string[]>();
+        this.rowsSubject = new Subject<any[]>();
     }
 
     public subscribeDbs(fn) {

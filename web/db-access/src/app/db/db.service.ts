@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@gnrx/store';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Rx';
 import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from '@angular/http';
 import { DbProxy } from './db.proxy';
