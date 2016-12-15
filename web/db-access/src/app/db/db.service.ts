@@ -32,7 +32,18 @@ export class DbService {
             return v.dbConn;
         });
     }
-
+/*
+    public getDbs(): Observable<string[]> {
+        this.getDbConn().subscribe((v: DbConnModel) => {
+            this.dbRepository.getDbs(v).subscribe((v: string[]) => {
+                this.store.dispatch(this.dbActions.addDbs(v));
+            });
+        });
+        return this.state.map((v: DbState) => {
+            return v.dbs;
+        });
+    }
+*/
     /*
      * TODO
      * To move to DbRepository
