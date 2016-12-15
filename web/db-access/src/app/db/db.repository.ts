@@ -8,4 +8,8 @@ import { Observable } from "rxjs/Rx";
 export class DbRepository {
 
     constructor(private http: Http) {}
+
+    private dbConnToQueryString(dbConn: DbConnModel): string {
+        return `host=${dbConn.ip}&port=${dbConn.port}&user=${dbConn.user}&password=${dbConn.password}`;
+    }
 }

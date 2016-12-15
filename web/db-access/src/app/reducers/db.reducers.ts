@@ -5,10 +5,10 @@ import { DbState, DbConnModel } from '../db/db.models';
 
 export const DbReducer: (state: DbState, action: Action<any>) => DbState = handleActions(
     <any>{
-        [DbActions.GET_DBS]: getDbs,
-        [DbActions.GET_TABLES]: getTables,
-        [DbActions.GET_FIELDS]: getFields,
-        [DbActions.GET_ROWS]: getRows,
+        [DbActions.ADD_DBS]: addDbs,
+        [DbActions.ADD_TABLES]: addTables,
+        [DbActions.ADD_FIELDS]: addFields,
+        [DbActions.ADD_ROWS]: addRows,
         [DbActions.SET_CONN]: setDbConn
     },
     {
@@ -20,7 +20,7 @@ export const DbReducer: (state: DbState, action: Action<any>) => DbState = handl
     }
 );
 
-function getDbs(state: DbState, action: Action<string[]>): DbState {
+function addDbs(state: DbState, action: Action<string[]>): DbState {
     // TODO
     return {
         dbConn: state.dbConn,
@@ -31,7 +31,7 @@ function getDbs(state: DbState, action: Action<string[]>): DbState {
     }
 }
 
-function getTables(state: DbState, action: Action<string[]>): DbState {
+function addTables(state: DbState, action: Action<string[]>): DbState {
     // TODO
     return {
         dbConn: state.dbConn,
@@ -42,7 +42,7 @@ function getTables(state: DbState, action: Action<string[]>): DbState {
     }
 }
 
-function getFields(state: DbState, action: Action<string[]>): DbState {
+function addFields(state: DbState, action: Action<string[]>): DbState {
     // TODO
     return {
         dbConn: state.dbConn,
@@ -53,7 +53,7 @@ function getFields(state: DbState, action: Action<string[]>): DbState {
     }
 }
 
-function getRows(state: DbState, action: Action<any[]>): DbState {
+function addRows(state: DbState, action: Action<any[]>): DbState {
     // TODO
     return {
         dbConn: state.dbConn,
