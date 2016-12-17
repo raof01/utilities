@@ -12,4 +12,14 @@ export class DbRepository {
     private dbConnToQueryString(dbConn: DbConnModel): string {
         return `host=${dbConn.ip}&port=${dbConn.port}&user=${dbConn.user}&password=${dbConn.password}`;
     }
+
+    public getDbs(dbConnModel: DbConnModel): Observable<Response> {
+        let query: string =
+            `host=${dbConnModel.ip}&port=${dbConnModel.port}&user=${dbConnModel.user}&password=${dbConnModel.password}`;
+        return this.http.get(`${dbConnModel.url}dbs?${query}`, new RequestOptions({
+            headers: new Headers({
+                'Content-Type': 'application/json',
+            })
+        }));
+    }
 }

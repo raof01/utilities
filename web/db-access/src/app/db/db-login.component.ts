@@ -45,6 +45,7 @@ export class DbLoginComponent {
     }
 
     public onClick(event) {
-        this.dbService.getDbs(this.dbConnModel);
+        this.dbService.setDbConn(this.dbConnModel);
+        this.dbService.getDbs();
     }
 }

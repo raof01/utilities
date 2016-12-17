@@ -5,6 +5,7 @@ import { Http, Request, Response, RequestMethod, Headers, RequestOptions } from 
 import { DbProxy } from './db.proxy';
 import { DbConnModel } from './db.models';
 import { DbActions } from '../actions/db.actions';
+import { ConnActions } from '../actions/conn.action';
 import { DbRepository } from './db.repository';
 import { DbState } from './db.models';
 
@@ -12,49 +13,38 @@ import { DbState } from './db.models';
 export class DbService {
 
     private state: Observable<DbState>;
+    private dbConn: Observable<DbConnModel>;
 
     constructor(
         private http: Http,
         private proxyService: DbProxy,
         private dbActions: DbActions,
+        private connActions: ConnActions,
         private dbRepository: DbRepository,
         private store: Store<any>
     ) {
         this.state = this.store.select('dbReducer') as Observable<DbState>;
+        this.dbConn = this.store.select('connReducer') as Observable<DbConnModel>;
     }
 
     public setDbConn(dbConnModel: DbConnModel) {
-        this.store.dispatch(this.dbActions.setDbConn(dbConnModel));
+        this.store.dispatch(this.connActions.setDbConn(dbConnModel));
     }
 
-    private getDbConn(): Observable<DbConnModel> {
-        return this.state.map((v: DbState) => {
-            return v.dbConn;
-        });
-    }
-/*
-    public getDbs(): Observable<string[]> {
-        this.getDbConn().subscribe((v: DbConnModel) => {
-            this.dbRepository.getDbs(v).subscribe((v: string[]) => {
-                this.store.dispatch(this.dbActions.addDbs(v));
+    public getDbs() {
+        this.dbConn.subscribe((v: DbConnModel) => {
+            this.dbRepository.getDbs(v).subscribe((value: Response) => {
+                this.store.dispatch(this.dbActions.addDbs(value.json()))
+                this.proxyService.notifyDbs(value.json());
             });
         });
-        return this.state.map((v: DbState) => {
-            return v.dbs;
-        });
     }
-*/
+
     /*
      * TODO
      * To move to DbRepository
-     */
+     
     public getDbs(dbConnModel: DbConnModel) : void {
-        /*let body: string = `{
-            host: ${ip},
-            port: ${port},
-            user: ${user},
-            password: ${password}
-        }`;*/
         let query: string =
             `host=${dbConnModel.ip}&port=${dbConnModel.port}&user=${dbConnModel.user}&password=${dbConnModel.password}`;
         this.http.get(`${dbConnModel.url}dbs?${query}`, new RequestOptions({
@@ -64,7 +54,7 @@ export class DbService {
         })).subscribe((value: Response) => {
             this.proxyService.notifyDbs(value.json());
         });
-    }
+    }*/
 
     public getTables(dbConnModel: DbConnModel, dbName: string) {
         let query: string =

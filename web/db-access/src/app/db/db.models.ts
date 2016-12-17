@@ -7,7 +7,6 @@ export interface DbConnModel {
 }
 
 export interface DbState {
-    dbConn: DbConnModel;
     dbs: string[];
     tables: string[];
     fields: string[];

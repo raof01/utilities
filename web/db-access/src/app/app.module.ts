@@ -11,6 +11,7 @@ import { DbProxy } from './db/db.proxy';
 import { RowsComponent } from './db/rows.component';
 import { APP_STORES } from './app.store';
 import { DbActions } from './actions/db.actions';
+import { ConnActions } from './actions/conn.action';
 import { DbRepository } from './db/db.repository';
 
 @NgModule({
@@ -30,6 +31,7 @@ import { DbRepository } from './db/db.repository';
     DbService,
     DbProxy,
     DbActions,
+    ConnActions,
     DbRepository
   ],
   bootstrap: [AppComponent]
