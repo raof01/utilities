@@ -4,6 +4,7 @@
 using namespace std;
 namespace CppToolBox
 {
+
 template <typename T>
 ostream& AddKeyValueToOstream(ostream& os, const string& k, T v)
 {
@@ -14,28 +15,28 @@ ostream& AddKeyValueToOstream(ostream& os, const string& k, T v)
 template <typename... Ts>
 void Logger::AddBeginPairs(const string& funcName, const pair<string, Ts>&... args)
 {
-    AddTagToOstream(cerr, funcName, BEGIN);
+    AddTagToOstream(output, funcName, BEGIN);
     AddPairs(args...);
 }
 
 template <typename... Ts>
 void Logger::AddEndPairs(const string& funcName, const pair<string, Ts>&... args)
 {
-    AddTagToOstream(cerr, funcName, END);
+    AddTagToOstream(output, funcName, END);
     AddPairs(args...);
 }
 
 template <typename... Ts>
 void Logger::AddMsgPairs(const string& msg, const pair<string, Ts>&... args)
 {
-    AddMsgToOstream(cerr, msg);
+    AddMsgToOstream(output, msg);
     AddPairs(args...);
 }
 
 template <typename T>
 void Logger::AddPairs(const pair<string, T>& arg)
 {
-    AddKeyValueToOstream(cerr << COLON,
+    AddKeyValueToOstream(output << COLON,
                          arg.first, arg.second) << endl;
 }
 
@@ -43,7 +44,7 @@ template <typename T, typename... Ts>
 void Logger::AddPairs(const pair<string, T>& arg,
                       const pair<string, Ts>&... args)
 {
-    AddKeyValueToOstream(cerr << COLON, arg.first, arg.second);
+    AddKeyValueToOstream(output << COLON, arg.first, arg.second);
     AddPairs(args...);
 }
 

@@ -56,6 +56,7 @@ private:
     static ostream& AddMsgToOstream(ostream&, const string&);
 
 private:
+    static ostream& output;
     static MyTime mTime;
 };
 }

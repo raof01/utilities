@@ -6,27 +6,28 @@ using std::endl;
 using CppToolBox::Logger;
 using CppToolBox::MyTime;
 
+ostream& Logger::output(cerr);
 MyTime Logger::mTime = MyTime();
 
 void Logger::AddBegin(const string & funcName)
 {
-    AddTagToOstream(cerr, funcName, BEGIN) << endl;
+    AddTagToOstream(output, funcName, BEGIN) << endl;
 }
 
 void Logger::AddEnd(const string & funcName)
 {
-    AddTagToOstream(cerr, funcName, END) << endl;
+    AddTagToOstream(output, funcName, END) << endl;
 }
 
 void Logger::AddMsg(const string & msg)
 {
-    AddMsgToOstream(cerr, msg) << endl;
+    AddMsgToOstream(output, msg) << endl;
 }
 
 void Logger::Setup()
 {
-    cerr.precision(PRECISION);
-    cerr.setf(ios::left);
+    output.precision(PRECISION);
+    output.setf(ios::left);
 }
 
 ostream& Logger::AddTagToOstream(ostream& os, const string& f, const string& s)
