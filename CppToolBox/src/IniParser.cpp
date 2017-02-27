@@ -4,6 +4,7 @@
 #include <functional>
 #include <cctype>
 #include <locale>
+#include <iterator>
 #include "IniParser.h"
 
 using std::ifstream;
