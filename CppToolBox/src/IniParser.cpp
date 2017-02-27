@@ -11,6 +11,10 @@ using std::istringstream;
 using std::ptr_fun;
 using std::not1;
 using std::isspace;
+using std::begin;
+using std::end;
+using std::rbegin;
+using std::rend;
 
 const string OPEN_BRACKET = "[";
 const string CLOSE_BRACKET = "]";
@@ -37,14 +41,14 @@ string GetSectionName(const string& s)
 // trim from start
 static inline string &LeftTrim(string &s)
 {
-    s.erase(s.begin(), find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace))));
+    s.erase(begin(s), find_if(begin(s), end(s), not1(ptr_fun<int, int>(isspace))));
     return s;
 }
 
 // trim from end
 static inline string &RightTrim(string &s)
 {
-    s.erase(find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(), s.end());
+    s.erase(find_if(rbegin(s), rend(s), not1(ptr_fun<int, int>(isspace))).base(), s.end());
     return s;
 }
 
@@ -65,7 +69,7 @@ static string GetValidSection(const string& s)
         return string();
     if (s.find(OPEN_BRACKET) != 0 || s.find(CLOSE_BRACKET) != s.length() - 1)
         return string();
-    string name = GetSectionName(s);
+    auto name = GetSectionName(s);
     if (name.find(OPEN_BRACKET) != string::npos || name.find(CLOSE_BRACKET) != string::npos)
         return string();
     return name;
@@ -73,7 +77,7 @@ static string GetValidSection(const string& s)
 
 static string RemoveComment(const string& s)
 {
-    string::size_type p = s.find(COMMENT_SIGN);
+    auto p = s.find(COMMENT_SIGN);
     if (p != string::npos)
         return s.substr(0, p);
     return s;
@@ -81,16 +85,16 @@ static string RemoveComment(const string& s)
 
 bool IniParser::Parse()
 {
-    ifstream iniFile(mIniFileName);
+    auto iniFile = ifstream(mIniFileName);
     if (!iniFile.good()) return false;
-    string line;
-    string savedSecName;
+    auto line = string();
+    auto savedSecName = string();
     map<string, string> keyValues;
     while(std::getline(iniFile, line))
     {
         line = RemoveComment(line);
         Trim(line);
-        string secName;
+        auto secName = string();
         if (!IsConfiguration(line))
         {
           secName = GetValidSection(line);
@@ -107,7 +111,7 @@ bool IniParser::Parse()
         else
         {
             if (savedSecName.empty()) savedSecName = DEFAULT_SECTION;
-            istringstream iss(line);
+            auto iss = istringstream(line);
             string key, equal, value;
             iss >> key >> equal >> value;
             keyValues.insert(make_pair(key, value));
@@ -121,11 +125,11 @@ bool IniParser::Parse()
 
 string IniParser::FindByKey(const string &k) const
 {
-    for (IniTreeType::const_iterator iter = mKeyValues.begin();
-         iter != mKeyValues.end(); ++iter)
+    for (auto iter = begin(mKeyValues);
+         iter != end(mKeyValues); ++iter)
     {
-        SectionType::const_iterator i = iter->second.find(k);
-        if (i != iter->second.end())
+        auto i = iter->second.find(k);
+        if (i != end(iter->second))
             return i->second;
     }
     return string();
@@ -134,21 +138,21 @@ string IniParser::FindByKey(const string &k) const
 string IniParser::FindByKeyInSection(const string &s, const string &k) const
 {
     if (s.empty()) return FindByKey(k);
-    SectionType::const_iterator i = mKeyValues.find(s)->second.find(k);
+    auto i = mKeyValues.find(s)->second.find(k);
     return i->second;
 }
 
 bool IniParser::HasSection(const string &sectionName) const
 {
-    return mKeyValues.find(sectionName) != mKeyValues.end();
+    return mKeyValues.find(sectionName) != end(mKeyValues);
 }
 
 bool IniParser::HasKey(const string &keyName) const
 {
-    for (IniTreeType::const_iterator iter = mKeyValues.begin();
-         iter != mKeyValues.end(); ++iter)
+    for (auto iter = begin(mKeyValues);
+         iter != end(mKeyValues); ++iter)
     {
-        if (iter->second.find(keyName) != iter->second.end())
+        if (iter->second.find(keyName) != end(iter->second))
             return true;
     }
     return false;
@@ -156,8 +160,8 @@ bool IniParser::HasKey(const string &keyName) const
 
 bool IniParser::HasKey(const string &secName, const string &keyName) const
 {
-    IniTreeType::const_iterator secIter = mKeyValues.find(secName);
-    return secIter == mKeyValues.end() ? false : secIter->second.find(keyName) != secIter->second.end();
+    auto secIter = mKeyValues.find(secName);
+    return secIter == end(mKeyValues) ? false : secIter->second.find(keyName) != end(secIter->second);
 }
 
 int IniParser::SectionCount() const
@@ -168,8 +172,8 @@ int IniParser::SectionCount() const
 int IniParser::SectionCount(const string &secNamePattern) const
 {
     int cnt = 0;
-    for (IniTreeType::const_iterator iter = mKeyValues.begin();
-         iter != mKeyValues.end(); ++iter)
+    for (auto iter = begin(mKeyValues);
+         iter != end(mKeyValues); ++iter)
     {
         if (iter->first.find(secNamePattern) != string::npos)
             ++cnt;
@@ -180,15 +184,15 @@ int IniParser::SectionCount(const string &secNamePattern) const
 int IniParser::KeyValueCount(const string &sectionName) const
 {
     if (!HasSection(sectionName)) return 0;
-    IniTreeType::const_iterator iter = mKeyValues.find(sectionName);
+    auto iter = mKeyValues.find(sectionName);
     return iter->second.size();
 }
 
 int IniParser::KeyValueCount() const
 {
     int cnt = 0;
-    for (IniTreeType::const_iterator iter = mKeyValues.begin();
-         iter != mKeyValues.end(); ++iter)
+    for (auto iter = begin(mKeyValues);
+         iter != end(mKeyValues); ++iter)
     {
         cnt += iter->second.size();
     }
@@ -199,9 +203,9 @@ void IniParser::AllValues(const string &s, vector<string>& v) const
 {
     v.clear();
     if (!HasSection(s)) return;
-    IniTreeType::const_iterator section = mKeyValues.find(s);
-    for (SectionType::const_iterator iter = section->second.begin();
-         iter != section->second.end(); ++iter)
+    auto section = mKeyValues.find(s);
+    for (auto iter = begin(section->second);
+         iter != end(section->second); ++iter)
     {
         v.push_back(iter->second);
     }
@@ -210,11 +214,11 @@ void IniParser::AllValues(const string &s, vector<string>& v) const
 void IniParser::AllValues(vector<string>& v) const
 {
     v.clear();
-    for(IniTreeType::const_iterator iter = mKeyValues.begin();
-        iter != mKeyValues.end(); ++iter)
+    for(auto iter = begin(mKeyValues);
+        iter != end(mKeyValues); ++iter)
     {
-        for (SectionType::const_iterator sIter = iter->second.begin();
-             sIter != iter->second.end(); ++sIter)
+        for (auto sIter = begin(iter->second);
+             sIter != end(iter->second); ++sIter)
             v.push_back(sIter->second);
     }
 }

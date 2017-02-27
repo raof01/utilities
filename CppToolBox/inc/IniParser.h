@@ -88,8 +88,8 @@ private:
     void StringsToValues(const vector<string>& sv, vector<T>& vv) const
     {
         vv.clear();
-        for(vector<string>::const_iterator iter = sv.begin();
-            iter != sv.end(); ++iter)
+        for(auto iter = std::begin(sv);
+            iter != std::end(sv); ++iter)
         {
             T val;
             istringstream(*iter) >> val;
