@@ -34,41 +34,23 @@ public:
     static void AddEnd(const string&);
     static void AddMsg(const string&);
 
-    template <typename T>
-    static void AddBegin1Pair(const string &, const pair<string, T> &);
-    template <typename T>
-    static void AddEnd1Pair(const string&, const pair<string, T>&);
-    template <typename T>
-    static void AddMsg1Pair(const string&, const pair<string, T>&);
+    template <typename... Ts>
+    static void AddBeginPairs(const string&, const pair<string, Ts>&... args);
 
-    template <typename T1, typename T2>
-    static void AddBegin2Pairs(const string&,
-                               const pair<string, T1>&,
-                               const pair<string, T2>&);
-    template <typename T1, typename T2>
-    static void AddEnd2Pairs(const string&,
-                             const pair<string, T1>&,
-                             const pair<string, T2>&);
-    template <typename T1, typename T2>
-    static void AddMsg2Pairs(const string&,
-                             const pair<string, T1>&,
-                             const pair<string, T2>&);
+    template <typename... Ts>
+    static void AddEndPairs(const string&, const pair<string, Ts>&... args);
 
-    template <typename T1, typename T2, typename T3>
-    static void AddBegin3Pairs(const string&,
-                               const pair<string, T1>&,
-                               const pair<string, T2>&,
-                               const pair<string, T3>&);
-    template <typename T1, typename T2, typename T3>
-    static void AddEnd3Pairs(const string&,
-                             const pair<string, T1>&,
-                             const pair<string, T2>&,
-                             const pair<string, T3>&);
-    template <typename T1, typename T2, typename T3>
-    static void AddMsg3Pairs(const string&,
-                             const pair<string, T1>&,
-                             const pair<string, T2>&,
-                             const pair<string, T3>&);
+    template <typename... Ts>
+    static void AddMsgPairs(const string&, const pair<string, Ts>&... args);
+
+private:
+    template <typename T>
+    static void AddPairs(const pair<string, T>&);
+
+    template <typename T, typename... Ts>
+    static void AddPairs(const pair<string, T>& arg,
+                         const pair<string, Ts>&... args);
+
 private:
     static ostream& AddTagToOstream(ostream&, const string&, const string&);
     static ostream& AddMsgToOstream(ostream&, const string&);
