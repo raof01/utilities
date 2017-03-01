@@ -40,8 +40,10 @@ endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 # Copy Files
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${${PROJECT_NAME}_SOURCE_DIR}/tests/test_data $<TARGET_FILE_DIR:${PROJECT_NAME}>
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${${PROJECT_NAME}_SOURCE_DIR}/tests/test_data ${CPP_PROJECTS_DIR})
-
+                   ${${PROJECT_NAME}_SOURCE_DIR}/tests/test_data $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+if (defined ${CPP_PROJECTS_DIR})
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy_directory
+                           ${${PROJECT_NAME}_SOURCE_DIR}/tests/test_data ${CPP_PROJECTS_DIR})
+endif (defined ${CPP_PROJECTS_DIR})
 
