@@ -11,7 +11,7 @@ using std::ostream;
 
 namespace CppToolBox
 {
-
+#if VS2013 != 1
 const int PRECISION = 16;
 const int FUNCTION_NAME_WIDTH = 20;
 const int KEY_WIDTH = 10;
@@ -59,7 +59,8 @@ private:
     static ostream& output;
     static MyTime mTime;
 };
+#endif
 }
 #include "Logger.incl"
-
 #endif
+

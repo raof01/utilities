@@ -4,7 +4,7 @@
 #include "Logger.h"
 
 using namespace CppToolBox;
-
+#if VS2013 != 1
 TEST(TestLogger, Printing)
 {
     Logger::Setup();
@@ -37,3 +37,4 @@ TEST(TestLogger, Printing)
                          std::make_pair<string, string>("KeyMsg3", "Value1"));
 }
 
+#endif

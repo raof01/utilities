@@ -4,7 +4,7 @@
 using namespace std;
 namespace CppToolBox
 {
-
+#if VS2013 != 1
 template <typename T>
 ostream& AddKeyValueToOstream(ostream& os, const string& k, T v)
 {
@@ -47,5 +47,5 @@ void Logger::AddPairs(const pair<string, T>& arg,
     AddKeyValueToOstream(output << COLON, arg.first, arg.second);
     AddPairs(args...);
 }
-
+#endif
 }

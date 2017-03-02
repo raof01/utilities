@@ -1,5 +1,5 @@
 #include "Logger.h"
-
+#if VS2013 != 1
 using std::cerr;
 using std::endl;
 
@@ -47,3 +47,4 @@ ostream& Logger::AddMsgToOstream(ostream& os, const string& msg)
        << MILLI_SECOND << COLON << msg;
     return os;
 }
+#endif
