@@ -36,6 +36,11 @@ plt.show()
 
 interpolated = interpolated.append(pd.Series([df['体重'][df.shape[0] - 1]]), ignore_index=True)
 #interpolated
+plt.subplot(211)
+plt.grid()
+plt.plot(p_avgs)
+plt.plot(avgs)
+plt.subplot(212)
 plt.grid()
 plt.plot(interpolated)
 plt.show()
