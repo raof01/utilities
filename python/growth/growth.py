@@ -23,7 +23,7 @@ for i in range(2, df.shape[0] + 1):
     (e,) = df[i - 1:i]['日期']
     days = days_in(s, e) + 1
     tmp_avg = (w1 - w0) / days
-    tmp_avgs = pd.Series([tmp_avg for x in range(days + 1)])
+    tmp_avgs = pd.Series([tmp_avg for x in range(days)])
     p_avgs = p_avgs.append(tmp_avgs, ignore_index=True)
 
     tmp_inc = pd.Series([w0 + y * tmp_avg for y in range(days)])
