@@ -62,7 +62,7 @@
    (list (tick-grid)
          (lines (map vector (build-day-list (length weight-interpolated)) weight-interpolated)
                 #:color 'indigo #:width 1.5
-                #:label (format "当前体重：~a，总增重：~a" weight-max weight-delta)))
+                #:label (format "出生:~a,目前:~a,增长:~a" weight-min weight-max weight-delta)))
    #:legend-anchor 'bottom-left
    #:x-label "天数" #:y-label "体重（克）" #:y-min 0 #:y-max weight-y-max))
 
@@ -87,6 +87,6 @@
    (list (tick-grid)
          (lines (map vector (build-day-list (length height-interpolated)) height-interpolated)
                 #:color 'black #:width 1.5
-                #:label (format "当前身高：~a，总增高：~a" height-max height-delta)))
+                #:label (format "出生:~a,目前:~a,增长:~a" height-min height-max height-delta)))
    #:legend-anchor 'bottom-left
    #:x-label "天数" #:y-label "身高（厘米）" #:y-min 0 #:y-max height-y-max))
