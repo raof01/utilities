@@ -52,7 +52,7 @@
    #:x-label "天数" #:y-label "体重增长值（克）" #:y-min weight-avg-y-min #:y-max weight-avg-y-max))
 
 (let*  ([weight-y-min (- (list-min weight-interpolated) weight-avg-min-half)]
-       [weight-y-max (- (list-max weight-interpolated) weight-avg-min-half)])
+       [weight-y-max (+ (list-max weight-interpolated) weight-avg-min-half)])
   (plot
    (list (tick-grid)
          (lines (map vector (build-day-list (length weight-interpolated)) weight-interpolated)
@@ -70,7 +70,7 @@
    #:x-label "天数" #:y-label "身高增长值（厘米）" #:y-min height-avg-y-min #:y-max height-avg-y-max))
 
 (let* ([height-y-min (- (list-min height-interpolated) height-avg-min-half)]
-       [height-y-max (- (list-max height-interpolated) height-avg-min-half)])
+       [height-y-max (+ (list-max height-interpolated) height-avg-min-half)])
   (plot
    (list (tick-grid)
          (lines (map vector (build-day-list (length height-interpolated)) height-interpolated)
