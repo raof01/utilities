@@ -8,11 +8,11 @@ def days_in(start_date, end_date):
 
 df = pd.read_csv('weight-data.csv')
 df = df.sort_values(by='日期')
-ds = days_in(df['日期'].min(), df['日期'].max()) + 1
+ds = days_in(df['日期'].min(), df['日期'].max())
 
 height_df = pd.read_csv('height-data.csv')
 height_df = height_df.sort_values(by='日期')
-h_ds = days_in(height_df['日期'].min(), height_df['日期'].max()) + 1
+h_ds = days_in(height_df['日期'].min(), height_df['日期'].max())
 
 
 avg = (df['体重'].max() - df['体重'].min()) / ds
@@ -28,9 +28,9 @@ for i in range(2, df.shape[0] + 1):
     (w1,) = df[i - 1:i]['体重']
     (s,) = df[i - 2:i - 1]['日期']
     (e,) = df[i - 1:i]['日期']
-    days = days_in(s, e) + 1
+    days = days_in(s, e)
     tmp_avg = (w1 - w0) / days
-    tmp_avgs = pd.Series([tmp_avg for x in range(days + 1)])
+    tmp_avgs = pd.Series([tmp_avg for x in range(days)])
     p_avgs = p_avgs.append(tmp_avgs, ignore_index=True)
 
     tmp_inc = pd.Series([w0 + y * tmp_avg for y in range(days)])
@@ -64,9 +64,9 @@ for i in range(2, height_df.shape[0] + 1):
     (w1,) = height_df[i - 1:i]['身高']
     (s,) = height_df[i - 2:i - 1]['日期']
     (e,) = height_df[i - 1:i]['日期']
-    days = days_in(s, e) + 1
+    days = days_in(s, e)
     tmp_avg = (w1 - w0) / days
-    tmp_avgs = pd.Series([tmp_avg for x in range(days + 1)])
+    tmp_avgs = pd.Series([tmp_avg for x in range(days)])
     h_p_avgs = h_p_avgs.append(tmp_avgs, ignore_index=True)
 
     tmp_inc = pd.Series([w0 + y * tmp_avg for y in range(days)])
