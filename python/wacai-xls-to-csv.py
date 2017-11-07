@@ -50,6 +50,18 @@ car_cost = data[data['cata_l1'].__eq__('交通')
                 | data['cata_l2'].__eq__(car_cost_cata[6])
                 | data['cata_l2'].__eq__(car_cost_cata[7])]
 car_cost = car_cost.drop({'cata_l1', 'cata_l2'}, axis=1)
+income_sheet = workbook.sheet_by_name('收入')
+income_date = [xl_date_to_date_str(income_sheet.col(5)[i].value,
+                                   workbook.datemode) for i in range(1, income_sheet.nrows)]
+income_amount = [income_sheet.col(6)[i].value for i in range(1, income_sheet.nrows)]
+income_data = pd.DataFrame()
+income_data['date'] = income_date
+income_data['amount'] = income_amount
+balance = income_data
+spent = data.drop({'cata_l1', 'cata_l2'}, axis=1)
+spent['amount'] = spent['amount'].apply(lambda x: -x)
+balance = balance.append(spent, ignore_index=True)
+balance.sort_values('date', inplace=True)
 #car_cost
 baby_cost = data[data['cata_l1'].__eq__('育儿')
                  | data['cata_l2'].__eq__('婴儿用品')
