@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTML & Javascript: Read file content</title>
+    <script>
+      function onClick() {
+        var fileToLoad = document.getElementById("cc").files[0];
+
+        var fileReader = new FileReader();
+        fileReader.onload = function(fileLoadedEvent){
+          var textFromFileLoaded = fileLoadedEvent.target.result;
+          console.log(textFromFileLoaded);
+        };
+
+        fileReader.readAsText(fileToLoad, "UTF-8");
+      }
+    </script>
+  </head>
+  <body>
+    <div style="box-sizing:border-box;width:100%;padding:2px">
+      <input type="file" id="cc"></inputxs>
+      <button id="ok" onclick="onClick()">OK</button>
+    </div>
+  </body>
+</html>
