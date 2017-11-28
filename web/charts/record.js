@@ -48,15 +48,27 @@ function plot(contents) {
     addRecords(contents);
     
     var data = {
-//	labels: getLabels(),
+	//	labels: getLabels(),
 	series: [
 	    getSeries()
 	]
     };
-    new Chartist.Line('.ct-chart', data, {
+    new Chartist.Line(document.getElementById('c1'), data, {
 	axisX: {
 	    type: Chartist.AutoScaleAxis,
 	    onlyInteger: true
-	}
+	},
+	lineSmooth: Chartist.Interpolation.none({
+	    fillHoles: false
+	})
+    });
+    new Chartist.Line(document.getElementById('c2'), data, {
+	axisX: {
+	    type: Chartist.AutoScaleAxis,
+	    onlyInteger: true
+	},
+	lineSmooth: Chartist.Interpolation.none({
+	    fillHoles: false
+	})
     });
 }
