@@ -3,13 +3,19 @@
   <head>
     <title>Charts from CSV file</title>
     <script src="populate-table.js"></script>
+    <script src="record.js"></script>
+    <link rel="stylesheet"
+          href="chartist-js-develop/dist/chartist.min.css">
+    <script src="chartist-js-develop/dist/chartist.min.js"></script>
     <script>
       function onOkClicked() {
       document.getElementById("plot").disabled = true;
       }
       function onFileLoaded(contents) {
       generateTables(contents);
+      //addRecords(contents);
       document.getElementById("plot").disabled = false;
+      plot(contents);
       }
       function onFileSelected() {
       readFileContent(document.getElementById("csvFile").files, onFileLoaded);
@@ -31,6 +37,7 @@
       <input type="button" id="plot" onclick="onOkClicked()" value="Plot" disabled="true"></input>
     </div>
     <hr>
+    <div class="ct-chart ct-perfect-fourth" style="width:25%"></div>
     <hr>
     <div id="data">
       <!-- <table id="data-table"> -->
