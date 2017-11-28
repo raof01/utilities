@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Charts from CSV file</title>
+    <script src="populate-table.js"></script>
+    <script>
+      function onOkClicked() {
+      document.getElementById("plot").disabled = true;
+      }
+      function onFileLoaded(contents) {
+      generateTables(contents);
+      document.getElementById("plot").disabled = false;
+      }
+      function onFileSelected() {
+      readFileContent(document.getElementById("csvFile").files, onFileLoaded);
+      }
+    </script>
+    <style>
+      td {
+      border: 1px solid black;
+      }
+      table {
+      border-collapse: collapse;
+      text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <input id="csvFile" type="file" onchange="onFileSelected()"></input>
+      <input type="button" id="plot" onclick="onOkClicked()" value="Plot" disabled="true"></input>
+    </div>
+    <hr>
+    <hr>
+    <div id="data">
+      <!-- <table id="data-table"> -->
+      <!-- </table> -->
+    </div>
+  </body>
+</html>
