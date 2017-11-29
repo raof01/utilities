@@ -20,6 +20,50 @@
       function onFileSelected() {
       readFileContent(document.getElementById("csvFile").files, onFileLoaded);
       }
+      
+      function plot(contents) {
+      addRecords(contents);
+      
+      var data = {
+      //	labels: getLabels(),
+      series: [
+      getSeries()
+      ]
+      };
+
+      var temp = getAvgSeries();
+      var avgs = {
+      labels: getAvgLabels(temp[0]),
+      series: [
+      {
+      name: 'avgs', data: getAvgs(temp[0])
+      },
+      {
+      name: 'all-avg', data: getAvgs(temp[1])
+      }
+      ]};
+      
+      new Chartist.Line(document.getElementById('data-plot'), data, {
+      axisX: {
+      type: Chartist.AutoScaleAxis,
+      onlyInteger: true
+      },lineSmooth: Chartist.Interpolation.none({
+      fillHoles: false
+      })
+      }
+      );
+      new Chartist.Line(document.getElementById('avgs-plot'), avgs, {
+      series: {
+      'avgs': {
+      lineSmooth: Chartist.Interpolation.step()
+      },
+      'all-avg': {
+      lineSmooth: Chartist.Interpolation.simple(),
+      }
+      },
+      showPoint: false
+      });
+      }
     </script>
     <style>
       td {
@@ -37,8 +81,8 @@
       <input type="button" id="plot" onclick="onOkClicked()" value="Plot" disabled="true"></input>
     </div>
     <hr>
-    <div id="c1" class="ct-chart ct-perfect-fourth" style="width:40%;float:left"></div>
-    <div id="c2" class="ct-chart ct-perfect-fourth" style="width:40%;float:left"></div>
+    <div id="data-plot" class="ct-chart ct-perfect-fourth" style="width:40%;float:left"></div>
+    <div id="avgs-plot" class="ct-chart ct-perfect-fourth" style="width:40%;float:left"></div>
     <div id="data" style="float:right">
     </div>
   </body>
