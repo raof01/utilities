@@ -4,65 +4,17 @@
     <title>Charts from CSV file</title>
     <script src="populate-table.js"></script>
     <script src="record.js"></script>
+    <script src="plot.js"></script>
     <link rel="stylesheet"
           href="chartist-js-develop/dist/chartist.min.css">
     <script src="chartist-js-develop/dist/chartist.min.js"></script>
     <script>
-      function onOkClicked() {
-      document.getElementById("plot").disabled = true;
-      }
       function onFileLoaded(contents) {
       generateTables(contents);
-      //addRecords(contents);
-      document.getElementById("plot").disabled = false;
       plot(contents);
       }
       function onFileSelected() {
       readFileContent(document.getElementById("csvFile").files, onFileLoaded);
-      }
-      
-      function plot(contents) {
-      addRecords(contents);
-      
-      var data = {
-      //	labels: getLabels(),
-      series: [
-      getSeries()
-      ]
-      };
-
-      var temp = getAvgSeries();
-      var avgs = {
-      labels: getAvgLabels(temp[0]),
-      series: [
-      {
-      name: 'avgs', data: getAvgs(temp[0])
-      },
-      {
-      name: 'all-avg', data: getAvgs(temp[1])
-      }
-      ]};
-      
-      new Chartist.Line(document.getElementById('data-plot'), data, {
-      axisX: {
-      type: Chartist.AutoScaleAxis,
-      onlyInteger: true
-      },lineSmooth: Chartist.Interpolation.none({
-      fillHoles: false
-      })
-      }
-      );
-      new Chartist.Line(document.getElementById('avgs-plot'), avgs, {
-      series: {
-      'avgs': {
-      lineSmooth: Chartist.Interpolation.step()
-      },
-      'all-avg': {
-      lineSmooth: Chartist.Interpolation.simple(),
-      }
-      },
-      showPoint: false
-      });
       }
     </script>
     <style>
@@ -78,7 +30,6 @@
   <body>
     <div>
       <input id="csvFile" type="file" onchange="onFileSelected()"></input>
-      <input type="button" id="plot" onclick="onOkClicked()" value="Plot" disabled="true"></input>
     </div>
     <hr>
     <div id="data-plot" class="ct-chart ct-perfect-fourth" style="width:40%;float:left"></div>
