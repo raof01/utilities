@@ -7,6 +7,7 @@ from os import path
 import uuid
 from bloom_filter import BloomFilter
 import argparse
+import tqdm
 
 
 def file_hash(file_name):
@@ -32,7 +33,8 @@ def process(abs_input_dir, int_dir, abs_dup_dir):
     bf = BloomFilter(max_elements=21616, error_rate=0.01)
     with open('mapping.csv', 'w') as m:
         m.write('old-path-name,new-path-name\n')
-        for f in glob.glob(path.join(abs_input_dir, '**/*.jpg'), recursive=True):
+        files = glob.glob(path.join(abs_input_dir, '**/*.jpg'), recursive=True)
+        for f, i in tqdm.tqdm(files):
             int_name = gen_file_name(f, int_dir)
             os.rename(f, int_name)
             dest_name = int_name
