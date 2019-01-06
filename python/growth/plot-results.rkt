@@ -51,7 +51,7 @@
          (hrule weight-all-avg
                 #:label (format "总体日均 ~a" (real->decimal-string weight-all-avg))
                 #:color 'teal #:style 'long-dash #:width 1.5))
-   #:legend-anchor 'bottom-left
+   #:legend-anchor 'top-right
    #:x-label "天数" #:y-label "体重增长值（克）" #:y-min weight-avg-y-min #:y-max weight-avg-y-max))
 
 (let* ([weight-min (list-min weight-interpolated)]
@@ -63,7 +63,7 @@
          (lines (map vector (build-day-list (length weight-interpolated)) weight-interpolated)
                 #:color 'indigo #:width 1.5
                 #:label (format "出生:~a,目前:~a,增长:~a" weight-min weight-max weight-delta)))
-   #:legend-anchor 'bottom-left
+   #:legend-anchor 'bottom-right
    #:x-label "天数" #:y-label "体重（克）" #:y-min 0 #:y-max weight-y-max))
 
 (let* ([height-avg-y-min height-avg-min-half]
@@ -76,7 +76,7 @@
          (hrule height-all-avg
                 #:label (format "总体日均：~a" (real->decimal-string height-all-avg))
                 #:color 'teal #:style 'long-dash #:width 1.5))
-   #:legend-anchor 'bottom-left
+   #:legend-anchor 'top-right
    #:x-label "天数" #:y-label "身高增长值（厘米）" #:y-min height-avg-y-min #:y-max height-avg-y-max))
 
 (let* ([height-min (list-min height-interpolated)]
@@ -88,5 +88,5 @@
          (lines (map vector (build-day-list (length height-interpolated)) height-interpolated)
                 #:color 'black #:width 1.5
                 #:label (format "出生:~a,目前:~a,增长:~a" height-min height-max height-delta)))
-   #:legend-anchor 'bottom-left
+   #:legend-anchor 'bottom-right
    #:x-label "天数" #:y-label "身高（厘米）" #:y-min 0 #:y-max height-y-max))
